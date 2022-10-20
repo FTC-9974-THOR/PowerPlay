@@ -179,23 +179,23 @@ public class AutoWithStateMachinesPowerPlay extends LinearOpMode {
 
         // Let's define our trajectories
         //region TRAJECTORIES FOR LEVEL MIDDLE
-        Trajectory goForwardPowerPlay = drive.trajectoryBuilder(startPose)
+        Trajectory initialForward = drive.trajectoryBuilder(startPose)
                 .lineTo(new Vector2d(-36, -12 * teamColor))
                 .build();
-        Trajectory goToBasketTowerLevelMiddle = drive.trajectoryBuilder(goForwardPowerPlay.end())
-                .lineTo(new Vector2d(-8, -55 * teamColor))
+        Trajectory goTowardsCupsFirst = drive.trajectoryBuilder(initialForward.end())
+                .lineToLinearHeading(new Pose2d(-60, -12 * teamColor, Math.toRadians(180)))
                 .build();
-        Trajectory SlideBackFromTowerLevelMiddle1 = drive.trajectoryBuilder(goToBasketTowerLevelMiddle.end())
+        Trajectory goTowardsSecondPoleFirst = drive.trajectoryBuilder(goTowardsCupsFirst.end())
                 //.splineToConst
                 // antHeading(new Vector2d( -65,-72), Math.toRadians(90))
-                .lineTo(new Vector2d(-8, -60*teamColor))
+                .lineToLinearHeading(new Pose2d(-24, -12 * teamColor, Math.toRadians(180)))
                 .build();
-        Trajectory GoBackToStartLevelMiddle = drive.trajectoryBuilder(SlideBackFromTowerLevelMiddle1.end())
+        Trajectory goTowardsCupsSecond = drive.trajectoryBuilder(goTowardsSecondPoleFirst.end())
                 //.splineToConst
                 // antHeading(new Vector2d( -65,-72), Math.toRadians(90))
-                .lineToLinearHeading(new Pose2d(9, -72*teamColor, Math.toRadians(0)))
+                .lineToLinearHeading(new Pose2d(-60, -12*teamColor, Math.toRadians(180)))
                 .build();
-        Trajectory GoToWearhouseLevelMiddle = drive.trajectoryBuilder(GoBackToStartLevelMiddle.end())
+        Trajectory GoToWearhouseLevelMiddle = drive.trajectoryBuilder(goTowardsCupsSecond.end())
                 //.splineToConstantHeading(new Vector2d( -65,-72), Math.toRadians(90))
                 .lineToLinearHeading(new Pose2d(44, -72*teamColor, Math.toRadians(0)))
                 .build();
@@ -558,7 +558,7 @@ public class AutoWithStateMachinesPowerPlay extends LinearOpMode {
       //  pos = VuforiaStuff2023.sleeveSignal.ONEDOT;
          if (pos == VuforiaStuff2023.sleeveSignal.ONEDOT) {
              currentState = State.GoForwardTestPower;
-             drive.followTrajectoryAsync(goForwardPowerPlay);
+             drive.followTrajectoryAsync(initialForward);
 
              //       drive.followTrajectoryAsync(goToBasketTowerLevelMiddle);
         //     levelArmShouldGoTo = 2;
@@ -566,7 +566,7 @@ public class AutoWithStateMachinesPowerPlay extends LinearOpMode {
          }
          if(pos ==VuforiaStuff2023.sleeveSignal.TWODOTS) {
              currentState = State.GoForwardTestPower;
-             drive.followTrajectoryAsync(goForwardPowerPlay);
+             drive.followTrajectoryAsync(initialForward);
 
              //        drive.followTrajectoryAsync(goToBasketTowerLevelHigh);
        //      levelArmShouldGoTo = 4;
@@ -574,7 +574,7 @@ public class AutoWithStateMachinesPowerPlay extends LinearOpMode {
          }
          if(pos == VuforiaStuff2023.sleeveSignal.THREEDOTS) {
              currentState = State.GoForwardTestPower;
-             drive.followTrajectoryAsync(goForwardPowerPlay);
+             drive.followTrajectoryAsync(initialForward);
 
              //     drive.followTrajectoryAsync(goToBasketTowerLevelLow);
           //   levelArmShouldGoTo = 1;
@@ -617,7 +617,7 @@ public class AutoWithStateMachinesPowerPlay extends LinearOpMode {
                     currentState = State.SlideBackFromTowerLevelMiddle1;
                     //levelArmShouldGoTo = -1;
                     ////drive.ArmLifterAsyncUpdate(levelArmShouldGoTo);
-                    drive.followTrajectoryAsync(SlideBackFromTowerLevelMiddle1);
+                    drive.followTrajectoryAsync(goTowardsCupsFirst);
 
                     break;
                 case SlideBackFromTowerLevelMiddle1:
@@ -625,7 +625,7 @@ public class AutoWithStateMachinesPowerPlay extends LinearOpMode {
                         currentState = State.GoBackToStartLevelMiddle;
                         levelArmShouldGoTo = -1;
                         ////drive.ArmLifterAsyncUpdate(levelArmShouldGoTo);
-                        drive.followTrajectoryAsync(GoBackToStartLevelMiddle);
+                        drive.followTrajectoryAsync(goTowardsSecondPoleFirst);
                     }
                     break;
                 case GoBackToStartLevelMiddle:
