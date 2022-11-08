@@ -8,6 +8,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
 import org.firstinspires.ftc.teamcode.AdrianControls.LinearSlidePID;
+import org.firstinspires.ftc.teamcode.AdrianControls.LinearSlidePIDWithVelocity;
+import org.firstinspires.ftc.teamcode.AdrianControls.MagneticSwitch;
 import org.firstinspires.ftc.teamcode.drive.MecanumDrive9974;
 
 /**
@@ -23,13 +25,15 @@ import org.firstinspires.ftc.teamcode.drive.MecanumDrive9974;
 
 
 public class TeleOpLinearSlidePIDTester extends LinearOpMode {
-    LinearSlidePID linearslide;
+   // LinearSlidePID linearslide;
+    LinearSlidePIDWithVelocity linearslide;
     @Override
     public void runOpMode() throws InterruptedException {
-        linearslide = new LinearSlidePID(hardwareMap);
-
+       // linearslide = newLinearSLidePID(hardwareMap);
+        linearslide = new LinearSlidePIDWithVelocity(hardwareMap);
         waitForStart();
-        linearslide.setTargetPosition(0.25);
+        //linearslide.setTargetPosition(0.25);
+        linearslide.moveTo(0.25);
         while(opModeIsActive()){
             linearslide.update();
             telemetry.addData("LiftPos", linearslide.getCurrentPosition());

@@ -15,6 +15,7 @@ import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+import org.firstinspires.ftc.teamcode.AdrianControls.MagneticSwitch;
 import org.firstinspires.ftc.teamcode.AdrianControls.VuforiaStuff2023;
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.MecanumDrive9974;
@@ -47,7 +48,11 @@ public class AutoWithStateMachinesPowerPlay extends LinearOpMode {
     enum State {
 // region STATES FOR LEVEL MIDDLE
         IDLE,
-        GoForwardTestPower,
+        InitalForward,
+        SecondForward,
+        goTowardsCupsFirstCycle,
+        goTowardsPoleFirstCycle,
+        goTowardsCupsSecondCycle,
         GoToBasketTowerLevelMiddle,   // First, follow a splineTo() trajectory
         OutakeBlocksMiddleOne,
         SlideBackFromTowerLevelMiddle1,
@@ -168,10 +173,10 @@ public class AutoWithStateMachinesPowerPlay extends LinearOpMode {
 
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
         parameters.cameraName = hardwareMap.get(WebcamName.class, "Webcam 1");
-
+        //Initialize Magnetic Switch Operated Turret.
+       // MagneticSwitch turret = new MagneticSwitch(hardwareMap);
         vuforia = ClassFactory.getInstance().createVuforia(parameters);
         vuforiaStuff = new VuforiaStuff2023(vuforia);
-
         Pose2d startPose = new Pose2d(-36, -72 * teamColor, Math.toRadians(90 * teamColor));
 
         // Set inital pose
@@ -180,22 +185,25 @@ public class AutoWithStateMachinesPowerPlay extends LinearOpMode {
         // Let's define our trajectories
         //region TRAJECTORIES FOR LEVEL MIDDLE
         Trajectory initialForward = drive.trajectoryBuilder(startPose)
+                .lineTo(new Vector2d(-36, -24 * teamColor))
+                .build();
+        Trajectory secondForward = drive.trajectoryBuilder(initialForward.end())
                 .lineTo(new Vector2d(-36, -12 * teamColor))
                 .build();
-        Trajectory goTowardsCupsFirst = drive.trajectoryBuilder(initialForward.end())
-                .lineToLinearHeading(new Pose2d(-60, -12 * teamColor, Math.toRadians(180)))
+        Trajectory goTowardsCupsFirstCycle = drive.trajectoryBuilder(secondForward.end())
+                .lineToLinearHeading(new Pose2d(-60, -12 * teamColor, Math.toRadians(180 * teamColor)))
                 .build();
-        Trajectory goTowardsSecondPoleFirst = drive.trajectoryBuilder(goTowardsCupsFirst.end())
+        Trajectory goTowardsPoleFirstCycle = drive.trajectoryBuilder(goTowardsCupsFirstCycle.end())
                 //.splineToConst
                 // antHeading(new Vector2d( -65,-72), Math.toRadians(90))
-                .lineToLinearHeading(new Pose2d(-24, -12 * teamColor, Math.toRadians(180)))
+                .lineToLinearHeading(new Pose2d(-24, -12 * teamColor, Math.toRadians(0)))
                 .build();
-        Trajectory goTowardsCupsSecond = drive.trajectoryBuilder(goTowardsSecondPoleFirst.end())
+        Trajectory goTowardsCupsSecondCycle = drive.trajectoryBuilder(goTowardsPoleFirstCycle.end())
                 //.splineToConst
                 // antHeading(new Vector2d( -65,-72), Math.toRadians(90))
                 .lineToLinearHeading(new Pose2d(-60, -12*teamColor, Math.toRadians(180)))
                 .build();
-        Trajectory GoToWearhouseLevelMiddle = drive.trajectoryBuilder(goTowardsCupsSecond.end())
+        Trajectory GoToWearhouseLevelMiddle = drive.trajectoryBuilder(goTowardsCupsSecondCycle.end())
                 //.splineToConstantHeading(new Vector2d( -65,-72), Math.toRadians(90))
                 .lineToLinearHeading(new Pose2d(44, -72*teamColor, Math.toRadians(0)))
                 .build();
@@ -557,7 +565,7 @@ public class AutoWithStateMachinesPowerPlay extends LinearOpMode {
         int levelArmShouldGoTo = 0;
       //  pos = VuforiaStuff2023.sleeveSignal.ONEDOT;
          if (pos == VuforiaStuff2023.sleeveSignal.ONEDOT) {
-             currentState = State.GoForwardTestPower;
+             currentState = State.InitalForward;
              drive.followTrajectoryAsync(initialForward);
 
              //       drive.followTrajectoryAsync(goToBasketTowerLevelMiddle);
@@ -565,7 +573,7 @@ public class AutoWithStateMachinesPowerPlay extends LinearOpMode {
           //   //drive.ArmLifterAsyncUpdate(levelArmShouldGoTo);
          }
          if(pos ==VuforiaStuff2023.sleeveSignal.TWODOTS) {
-             currentState = State.GoForwardTestPower;
+             currentState = State.InitalForward;
              drive.followTrajectoryAsync(initialForward);
 
              //        drive.followTrajectoryAsync(goToBasketTowerLevelHigh);
@@ -573,7 +581,7 @@ public class AutoWithStateMachinesPowerPlay extends LinearOpMode {
          //    //drive.ArmLifterAsyncUpdate(levelArmShouldGoTo);
          }
          if(pos == VuforiaStuff2023.sleeveSignal.THREEDOTS) {
-             currentState = State.GoForwardTestPower;
+             currentState = State.InitalForward;
              drive.followTrajectoryAsync(initialForward);
 
              //     drive.followTrajectoryAsync(goToBasketTowerLevelLow);
@@ -595,7 +603,7 @@ public class AutoWithStateMachinesPowerPlay extends LinearOpMode {
                     // This concludes the autonomous program
                     break;
 //region States For Level Middle
-                case GoForwardTestPower:
+                case InitalForward:
                     // Check if the drive class isn't busy
                     // `isBusy() == true` while it's following the trajectory
                     // Once `isBusy() == false`, the trajectory follower signals that it is finished
@@ -603,29 +611,28 @@ public class AutoWithStateMachinesPowerPlay extends LinearOpMode {
                     // Make sure we use the async follow function
                     if (!drive.isBusy())// && !drive.IsArmLifterBusy())
                     {
-                        currentState = State.IDLE;
-
-                        // drive.followTrajectoryAsync(trajectory2);
+                        currentState = State.SecondForward;
+                        drive.followTrajectoryAsync(secondForward);
                     }
 
                     break;
 
-                case OutakeBlocksMiddleOne:
-                    drive.outTakeblocks();
-                    sleep(150);
-                    drive.stopIntakeBlocks();
-                    currentState = State.SlideBackFromTowerLevelMiddle1;
+                case SecondForward:
+                    //drive.outTakeblocks();
+                    //sleep(150);
+                    //drive.stopIntakeBlocks();
+                    currentState = State.goTowardsCupsFirstCycle;
                     //levelArmShouldGoTo = -1;
                     ////drive.ArmLifterAsyncUpdate(levelArmShouldGoTo);
-                    drive.followTrajectoryAsync(goTowardsCupsFirst);
+                    drive.followTrajectoryAsync(goTowardsCupsFirstCycle);
 
                     break;
-                case SlideBackFromTowerLevelMiddle1:
+                case goTowardsCupsFirstCycle:
                     if (!drive.isBusy() && !drive.IsArmLifterBusy()) {
-                        currentState = State.GoBackToStartLevelMiddle;
+                        currentState = State.IDLE;
                         levelArmShouldGoTo = -1;
                         ////drive.ArmLifterAsyncUpdate(levelArmShouldGoTo);
-                        drive.followTrajectoryAsync(goTowardsSecondPoleFirst);
+                       // drive.followTrajectoryAsync(goTowardsSecondPoleFirst);
                     }
                     break;
                 case GoBackToStartLevelMiddle:

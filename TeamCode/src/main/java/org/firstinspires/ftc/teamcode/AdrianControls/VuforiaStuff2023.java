@@ -137,8 +137,8 @@ public class VuforiaStuff2023 {
             int cropWidth;
             int cropHeight;
 
-            cropStartX = (int) ((275/ 640.0) * bitmap.getWidth()); ;
-            cropStartY = (int) ((200 / 480.0) * bitmap.getHeight());
+            cropStartX = (int) ((100/ 640.0) * bitmap.getWidth()); ;
+            cropStartY = (int) ((260 / 480.0) * bitmap.getHeight());
             cropWidth = (int) ((75.0 / 640.0) * bitmap.getWidth());
             cropHeight = (int) ((93.0 / 480.0) * bitmap.getHeight());
 

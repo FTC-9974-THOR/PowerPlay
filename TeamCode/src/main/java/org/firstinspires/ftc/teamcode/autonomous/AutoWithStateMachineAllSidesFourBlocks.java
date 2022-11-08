@@ -15,6 +15,7 @@ import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+import org.firstinspires.ftc.teamcode.AdrianControls.MagneticSwitch;
 import org.firstinspires.ftc.teamcode.AdrianControls.VuforiaStuff;
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.MecanumDrive9974;
@@ -158,7 +159,7 @@ public class AutoWithStateMachineAllSidesFourBlocks extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         // Initialize our lift
         Lift lift = new Lift(hardwareMap);
-
+        //initialize our Magnetic Switch Turret
         // Initialize MecanumDrive9974
         MecanumDrive9974 drive = new MecanumDrive9974(hardwareMap);
         // Define our start pose

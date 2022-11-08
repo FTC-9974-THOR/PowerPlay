@@ -48,6 +48,6 @@ public class BLueAutoWithStateMachineAllSidesPower extends AutoWithStateMachines
 
     public BLueAutoWithStateMachineAllSidesPower()
     {
-        super(-1, false);
+        super(1, false);
     }
 }
