@@ -63,9 +63,9 @@ public class VuforiaStuff2023 {
         int YellowDetectiongreenThreshold = 150;
         int YellowDetectionblueThreshold = 150;
         //ForPurpleDetection Thresholds
-        int PurpleDetectionredThreshold = 150;
+        int PurpleDetectionredThreshold = 130;
         int PurpleDetectiongreenThreshold = 150;
-        int PurpleDetectionblueThreshold = 150;
+        int PurpleDetectionblueThreshold = 130;
         Vuforia.setFrameFormat(PIXEL_FORMAT.RGB565, true);
         VuforiaLocalizer.CloseableFrame closeableFrame = null;
         this.vuforia.setFrameQueueCapacity(1);
@@ -137,9 +137,9 @@ public class VuforiaStuff2023 {
             int cropWidth;
             int cropHeight;
 
-            cropStartX = (int) ((100/ 640.0) * bitmap.getWidth()); ;
-            cropStartY = (int) ((260 / 480.0) * bitmap.getHeight());
-            cropWidth = (int) ((75.0 / 640.0) * bitmap.getWidth());
+            cropStartX = (int) ((74.0/ 640.0) * bitmap.getWidth()); ;
+            cropStartY = (int) ((270.0 / 480.0) * bitmap.getHeight());
+            cropWidth = (int) ((60.0 / 640.0) * bitmap.getWidth());
             cropHeight = (int) ((93.0 / 480.0) * bitmap.getHeight());
 
 

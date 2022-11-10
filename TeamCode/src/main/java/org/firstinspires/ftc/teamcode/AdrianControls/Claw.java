@@ -7,9 +7,13 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.ftc9974.thorcore.meta.Realizer;
 import org.ftc9974.thorcore.meta.annotation.Hardware;
+import org.ftc9974.thorcore.util.MathUtilities;
 
 public class Claw {
+    public static final double CLAW_OPEN = MathUtilities.map(1000, 500, 2500, 0,1),
+            CLAW_CLOSED = MathUtilities.map(1450, 500, 2500, 0,1);
     @Hardware(name = "ClawServo")
+
     public Servo clawServo;
 // We are getting the state of the magneticLimitSwitch(True means it's not touched)
     public Claw(HardwareMap hardwareMap) {
@@ -20,11 +24,12 @@ public class Claw {
     public void moveClawOpen( boolean open) {
         if (open == true)
         {
-            clawServo.setPosition(1);
+            clawServo.setPosition(CLAW_OPEN);
+
         }
         else
         {
-            clawServo.setPosition(0);
+            clawServo.setPosition(CLAW_CLOSED);
         }
     }
 

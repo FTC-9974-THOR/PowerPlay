@@ -11,9 +11,9 @@ import org.ftc9974.thorcore.meta.annotation.Hardware;
 
 public class LinearSlidePID {
 
-    @Hardware
+    @Hardware(name="SlideMotor")
     public DcMotorEx Lift;
-    private static final double diameterOfSpool = 0.024; // in meters- diameter.
+    private static final double diameterOfSpool = 0.03565; // in meters- diameter.
     private static final double metersPerTick = (Math.PI * diameterOfSpool) / (7 * 4 * 13.7);
     private static final double minHeight = 0; // meters
     private static final double maxHeight = 0.5; // also meters

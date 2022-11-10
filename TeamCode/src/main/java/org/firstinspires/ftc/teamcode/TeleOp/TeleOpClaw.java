@@ -1,16 +1,9 @@
 package org.firstinspires.ftc.teamcode.TeleOp;
 
-import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DigitalChannel;
-import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
-import org.firstinspires.ftc.teamcode.AdrianControls.LinearSlidePID;
+import org.firstinspires.ftc.teamcode.AdrianControls.Claw;
 import org.firstinspires.ftc.teamcode.AdrianControls.LinearSlidePIDWithVelocity;
-import org.firstinspires.ftc.teamcode.AdrianControls.MagneticSwitch;
-import org.firstinspires.ftc.teamcode.drive.MecanumDrive9974;
 
 /**
  * This is a simple teleop routine for testing localization. Drive the robot around like a normal
@@ -24,22 +17,32 @@ import org.firstinspires.ftc.teamcode.drive.MecanumDrive9974;
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(group = "drive")
 
 
-public class TeleOpLinearSlidePIDTester extends LinearOpMode {
+public class TeleOpClaw extends LinearOpMode {
    // LinearSlidePID linearslide;
     LinearSlidePIDWithVelocity linearslide;
+    Claw claw;
     @Override
     public void runOpMode() throws InterruptedException {
+        claw = new Claw(hardwareMap);
        // linearslide = newLinearSLidePID(hardwareMap);
         linearslide = new LinearSlidePIDWithVelocity(hardwareMap);
         waitForStart();
         //linearslide.setTargetPosition(0.25);
-        linearslide.moveTo(0.35);
+        //linearslide.moveTo(0.35);
 
-
+        boolean isClawOpened = true;
+        claw.moveClawOpen(true);
         while(opModeIsActive()){
-            linearslide.update();
+            //linearslide.update();
+            if(isClawOpened)
+            {
+                isClawOpened = false;
+                claw.moveClawOpen(false);
+                linearslide.moveTo(0.35);
+            }
             telemetry.addData("LiftPos", linearslide.getCurrentPosition());
             telemetry.update();
+            linearslide.update();
 
         }
        // drive.SlideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);

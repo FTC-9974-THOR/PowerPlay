@@ -263,21 +263,21 @@ public class MecanumDrive9974 extends MecanumDrive {
    //     leftServo = hardwareMap.get(Servo.class, "leftServo");
     //   shooterServo = hardwareMap.get(Servo.class, "shooterServo");
         rightWheelServo = hardwareMap.get(CRServo.class, "rightWheelServo");
-        leftWheelServo = hardwareMap.get(CRServo.class, "leftWheelServo");
+        //leftWheelServo = hardwareMap.get(CRServo.class, "leftWheelServo");
     //   armServo = hardwareMap.get(Servo.class, "armServo");
      //   handServo = hardwareMap.get(Servo.class, "handServo");
        // elbowServo = hardwareMap.get(Servo.class, "elbowServo");
        // boxServo = hardwareMap.get(Servo.class, "boxServo");
-        greenWheelServo = hardwareMap.get(CRServo.class, "greenWheelServo");
-        turretServo = hardwareMap.get(Servo.class, "turretServo");
-        angleServo = hardwareMap.get(Servo.class, "angleServo");
-        leftWheel = hardwareMap.get(Servo.class, "leftWheel");
-        rightWheel = hardwareMap.get(Servo.class, "rightWheel");
+        //greenWheelServo = hardwareMap.get(CRServo.class, "greenWheelServo");
+        //turretServo = hardwareMap.get(Servo.class, "turretServo");
+        //angleServo = hardwareMap.get(Servo.class, "angleServo");
+        //leftWheel = hardwareMap.get(Servo.class, "leftWheel");
+        //rightWheel = hardwareMap.get(Servo.class, "rightWheel");
 
 
-        armPOT = hardwareMap.get(AnalogInput.class, "armPOT");
-        double currentVoltage = armPOT.getVoltage();
-
+        //armPOT = hardwareMap.get(AnalogInput.class, "armPOT");
+        //double currentVoltage = armPOT.getVoltage();
+        double currentVoltage;
         // if desired, use setLocalizer() to change the localization method
         // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
         setLocalizer((new StandardTrackingWheelLocalizer(hardwareMap) ));

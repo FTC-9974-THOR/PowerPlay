@@ -22,12 +22,12 @@ import static java.util.Collections.singletonList;
 
 public class LinearSlidePIDWithVelocity {
 
-    @Hardware(name = "LSPID-Lift")
+    @Hardware(name = "SlideMotor")
     public DcMotorEx Lift;
     private static final double diameterOfSpool = 0.024; // in meters- diameter.
     private static final double metersPerTick = (Math.PI * diameterOfSpool) / (7 * 4 * 13.7);
     private static final double minHeight = 0; // meters
-    private static final double maxHeight = 0.5; // also meters
+    private static final double maxHeight = 0.6125; // also meters
     private static final double MAX_VEL = 3;
     private static final double MAX_ACCEL = 2;
     private static final double MAX_JERK = 1;
@@ -73,6 +73,11 @@ public class LinearSlidePIDWithVelocity {
     public double getVelocity() {return metersPerTick * Lift.getVelocity();}
     public void setTargetPosition(double height) {
         controller.setTargetPosition(height);
+    }
+    public void goToZero()
+    {
+        moveTo(0);
+        Lift.setPower(0.0);
     }
 
     public static MotorConstants calculateMotorConstants(double freeSpeed, double stallTorque, double startupVoltage, double nominalVoltage){
