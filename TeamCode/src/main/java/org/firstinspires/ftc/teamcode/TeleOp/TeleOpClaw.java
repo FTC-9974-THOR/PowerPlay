@@ -1,9 +1,11 @@
 package org.firstinspires.ftc.teamcode.TeleOp;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.AdrianControls.Claw;
 import org.firstinspires.ftc.teamcode.AdrianControls.LinearSlidePIDWithVelocity;
+import org.firstinspires.ftc.teamcode.AdrianControls.Turret;
 
 /**
  * This is a simple teleop routine for testing localization. Drive the robot around like a normal
@@ -12,6 +14,7 @@ import org.firstinspires.ftc.teamcode.AdrianControls.LinearSlidePIDWithVelocity;
  * exercise is to ascertain whether the localizer has been configured properly (note: the pure
  * encoder localizer heading may be significantly off if the track width has not been tuned).
  */
+@Disabled
 
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(group = "drive")
@@ -21,9 +24,11 @@ public class TeleOpClaw extends LinearOpMode {
    // LinearSlidePID linearslide;
     LinearSlidePIDWithVelocity linearslide;
     Claw claw;
+    Turret turret;
     @Override
     public void runOpMode() throws InterruptedException {
         claw = new Claw(hardwareMap);
+        turret = new Turret(hardwareMap);
        // linearslide = newLinearSLidePID(hardwareMap);
         linearslide = new LinearSlidePIDWithVelocity(hardwareMap);
         waitForStart();
@@ -39,9 +44,11 @@ public class TeleOpClaw extends LinearOpMode {
                 isClawOpened = false;
                 claw.moveClawOpen(false);
                 linearslide.moveTo(0.35);
+                turret.turretGoHome(1);
             }
             telemetry.addData("LiftPos", linearslide.getCurrentPosition());
             telemetry.update();
+            turret.update();
             linearslide.update();
 
         }

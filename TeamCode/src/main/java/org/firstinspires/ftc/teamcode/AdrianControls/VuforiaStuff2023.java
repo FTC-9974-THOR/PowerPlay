@@ -35,7 +35,8 @@ public class VuforiaStuff2023 {
         public double twoDotsCount;
         public double threeDotsCount;
     }
-    public sleeveSignalDetectedData vuforiascan(boolean saveBitmaps, boolean red, boolean RGB ) {
+    public sleeveSignalDetectedData vuforiascan(boolean saveBitmaps, boolean red, boolean RGB,int sideWeStart ) {
+        //sideWeStart;//1=Left -1= Right
         Image rgbImage = null;
         int rgbTries = 0;
         /*
@@ -52,20 +53,33 @@ public class VuforiaStuff2023 {
         int RedDetectionblueThreshold = 160;
         //ForGreenDectection Thresholds
         int GreenDetectionredThreshold = 190;
-        int GreenDetectiongreenThreshold = 160;
+        int GreenDetectiongreenThreshold = 100;
         int GreenDetectionblueThreshold = 190;
         //ForBlueDectection Thresholds
         int BlueDetectionredThreshold = 190;
         int BlueDetectiongreenThreshold = 190;
         int BlueDetectionblueThreshold = 160;
         //ForYellowDetection Thresholds
-        int YellowDetectionredThreshold = 150;
-        int YellowDetectiongreenThreshold = 150;
+        int YellowDetectionredThreshold = 140;
+        int YellowDetectiongreenThreshold = 130;
         int YellowDetectionblueThreshold = 150;
         //ForPurpleDetection Thresholds
-        int PurpleDetectionredThreshold = 130;
+        int PurpleDetectionredThreshold = 90;
         int PurpleDetectiongreenThreshold = 150;
-        int PurpleDetectionblueThreshold = 130;
+        int PurpleDetectionblueThreshold = 90;
+
+        //Crop Variables Start
+        double cropStartXLeft = 64.0;
+        double cropStartYLeft = 45.0;
+        double cropWidthLeft = 60.0;
+        double cropHeightLeft = 93.0;
+        double cropStartXRight = 139.0;
+        double cropStartYRight = 45.0;
+        double cropWidthRight = 60.0;
+        double cropHeightRight = 93.0;
+        double MaxWidth=640.0;
+        double MaxHeight=480.0;
+        //Crop Variables End
         Vuforia.setFrameFormat(PIXEL_FORMAT.RGB565, true);
         VuforiaLocalizer.CloseableFrame closeableFrame = null;
         this.vuforia.setFrameQueueCapacity(1);
@@ -136,13 +150,22 @@ public class VuforiaStuff2023 {
             int cropStartY;
             int cropWidth;
             int cropHeight;
+            if(sideWeStart == -1)//right
+            {
+                cropStartX = (int) ((cropStartXRight / MaxWidth) * bitmap.getWidth());
+                cropStartY = (int) ((cropStartYRight / MaxHeight) * bitmap.getHeight());
+                cropWidth = (int) ((cropWidthRight / MaxWidth) * bitmap.getWidth());
+                cropHeight = (int) ((cropHeightRight / MaxHeight) * bitmap.getHeight());
 
-            cropStartX = (int) ((74.0/ 640.0) * bitmap.getWidth()); ;
-            cropStartY = (int) ((270.0 / 480.0) * bitmap.getHeight());
-            cropWidth = (int) ((60.0 / 640.0) * bitmap.getWidth());
-            cropHeight = (int) ((93.0 / 480.0) * bitmap.getHeight());
+            }
+            else //left
+            {
+                cropStartX = (int) ((cropStartXLeft / MaxWidth) * bitmap.getWidth());
+                cropStartY = (int) ((cropStartYLeft / MaxHeight) * bitmap.getHeight());
+                cropWidth = (int) ((cropWidthLeft / MaxWidth) * bitmap.getWidth());
+                cropHeight = (int) ((cropHeightLeft / MaxHeight) * bitmap.getHeight());
 
-
+            }
 
             bitmap = createBitmap(bitmap, cropStartX, cropStartY, cropWidth, cropHeight); //Cropped Bitmap to show only stones
 

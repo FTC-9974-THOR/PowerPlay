@@ -1,17 +1,10 @@
 package org.firstinspires.ftc.teamcode.TeleOp;
 
-import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DigitalChannel;
-import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
 import org.firstinspires.ftc.teamcode.AdrianControls.LinearSlidePID;
 import org.firstinspires.ftc.teamcode.AdrianControls.LinearSlidePIDWithVelocity;
-import org.firstinspires.ftc.teamcode.AdrianControls.MagneticSwitch;
-import org.firstinspires.ftc.teamcode.drive.MecanumDrive9974;
 
 /**
  * This is a simple teleop routine for testing localization. Drive the robot around like a normal
@@ -23,33 +16,28 @@ import org.firstinspires.ftc.teamcode.drive.MecanumDrive9974;
 
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(group = "drive")
-@Disabled
-
-
-public class TeleOpLinearSlidePIDTester extends LinearOpMode {
-   // LinearSlidePID linearslide;
-    LinearSlidePIDWithVelocity linearslide;
+//@Disabled
+public class TeleOpLinearSlideManualControl extends LinearOpMode {
+    LinearSlidePID linearslide;
+    //LinearSlidePIDWithVelocity linearslide;
     @Override
     public void runOpMode() throws InterruptedException {
-       // linearslide = newLinearSLidePID(hardwareMap);
-        linearslide = new LinearSlidePIDWithVelocity(hardwareMap);
+        linearslide = new LinearSlidePID(hardwareMap);
+        //linearslide = new LinearSlidePIDWithVelocity(hardwareMap);
         waitForStart();
         //linearslide.setTargetPosition(0.25);
-        linearslide.moveTo(0.35);
+        //linearslide.moveTo(0.35);
 
         boolean hasItReachedTheTop = false;
         while(opModeIsActive()){
-            if(!hasItReachedTheTop) {
-                linearslide.update();
-            }
-            if((linearslide.getPosition() - 0.35) < 0.01)
+            linearslide.update();
+            if(gamepad2.right_stick_y!=0)
             {
-                hasItReachedTheTop = true;
+                linearslide.setTargetPosition(linearslide.getCurrentPosition()+(gamepad2.right_stick_y*-0.05));
             }
-            if(hasItReachedTheTop)
+            if(gamepad2.b)
             {
-                linearslide.moveTo(0.0);
-
+                //linearslide.moveToMiddlePole();
             }
             telemetry.addData("LiftPos", linearslide.getCurrentPosition());
             telemetry.update();

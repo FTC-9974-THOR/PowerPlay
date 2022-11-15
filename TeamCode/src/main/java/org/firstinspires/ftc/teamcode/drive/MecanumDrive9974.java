@@ -208,19 +208,15 @@ public class MecanumDrive9974 extends MecanumDrive {
         duckMotor = hardwareMap.get(DcMotorEx.class, "leftEncoder");
         rightEncoderMotor = hardwareMap.get(DcMotorEx.class, "rightEncoder");
         indexer = hardwareMap.get(DcMotorEx.class, "leftEncoder");
-        digitalTouch = hardwareMap.get(DigitalChannel.class, "touchSensor");
-        redLED1 = hardwareMap.get(DigitalChannel.class, "red1");
-        redLED2 = hardwareMap.get(DigitalChannel.class, "red2");
-        greenLED1 = hardwareMap.get(DigitalChannel.class, "green1");
-        greenLED2 = hardwareMap.get(DigitalChannel.class, "green2");
+        //digitalTouch = hardwareMap.get(DigitalChannel.class, "touchSensor");
+        //redLED1 = hardwareMap.get(DigitalChannel.class, "red1");
+        //redLED2 = hardwareMap.get(DigitalChannel.class, "red2");
+        //greenLED1 = hardwareMap.get(DigitalChannel.class, "green1");
+        //greenLED2 = hardwareMap.get(DigitalChannel.class, "green2");
 
 
 
-
-
-
-
-        digitalTouch.setMode(DigitalChannel.Mode.INPUT);
+//        digitalTouch.setMode(DigitalChannel.Mode.INPUT);
 
 
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);

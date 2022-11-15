@@ -30,7 +30,6 @@
 package org.firstinspires.ftc.teamcode.autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 /**
  * This 2020-2021 OpMode illustrates the basics of using the TensorFlow Object Detection API to
@@ -42,12 +41,12 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
  * IMPORTANT: In order to use this OpMode, you need to obtain your own Vuforia license key as
  * is explained below.
  */
-@Autonomous(name = "BlueAutoWithStateMachineAllSidesFourBlocks", group = "Autonomous")
-@Disabled
+@Autonomous(name = "Right_AutoPowerPlayWithOneConeFromStack", group = "Autonomous")
+//@Disabled
 
-public class BLueAutoWithStateMachineAllSidesFourBlocks extends AutoWithStateMachineAllSidesFourBlocks {
+public class Right_AutoPowerPlayWithOneConeFromStack extends AutoPowerPlayWithOneConeFromStack {
 
-    public BLueAutoWithStateMachineAllSidesFourBlocks()
+    public Right_AutoPowerPlayWithOneConeFromStack()
     {
         super(-1, false);
     }

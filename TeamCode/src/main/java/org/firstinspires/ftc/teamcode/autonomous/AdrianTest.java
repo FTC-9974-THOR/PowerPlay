@@ -57,7 +57,7 @@ import org.firstinspires.ftc.teamcode.drive.MecanumDrive9974;
  */
 
 @Autonomous(name="AdrianTest", group="Linear Opmode")
-//@Disabled
+@Disabled
 public class AdrianTest extends LinearOpMode {
 
     // Declare OpMode members.

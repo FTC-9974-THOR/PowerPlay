@@ -15,29 +15,26 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.ftc9974.thorcore.control.VoltageRegulator;
 import org.ftc9974.thorcore.meta.Realizer;
 import org.ftc9974.thorcore.meta.annotation.Hardware;
-import org.ftc9974.thorcore.util.MotorUtilities;
 
 import java.util.Collections;
 
-import static java.util.Collections.singletonList;
-
-public class LinearSlidePIDWithVelocity {
+public class LinearSlidePIDWithVelocity435Motor {
 
     @Hardware(name = "SlideMotor")
     public DcMotorEx Lift;
     @Hardware(name = "LiftMagneticSwitch")
     public DigitalChannel liftMagneticSwitch;
 
-    private static final double diameterOfSpool = 0.03225; // in meters- diameter.
-    private static final double metersPerTick = (Math.PI * diameterOfSpool) / (7 * 4 * 19.2);
+    private static final double diameterOfSpool = 0.024; // in meters- diameter.
+    private static final double metersPerTick = (Math.PI * diameterOfSpool) / (7 * 4 * 13.7);
     private static final double minHeight = 0; // meters
-    private static final double maxHeight = 0.77; // also meters
+    private static final double maxHeight = 0.6125; // also meters
     private static final double MAX_VEL = 3.5;
     private static final double MAX_ACCEL = 2.0;//0.5
     private static final double MAX_JERK = 1.0;//0.25
-    private static final double lowPoleHeight = 0.326;
-    private static final double middlePoleHeight = 0.549;
-    private static final double highPoleHeight = 0.77;
+    private static final double lowPoleHeight = 0.258;
+    private static final double middlePoleHeight = 0.43053;
+    private static final double highPoleHeight = 0.6125;
     private static final double aboveTheCameraHeight = 0.1;
     public static class MotorConstants {
         public double kV, kB, kStatic;
@@ -47,7 +44,7 @@ public class LinearSlidePIDWithVelocity {
         Idle
     }
     public LinearSlideStates LinearSlideMode;
-    public static final MotorConstants MOTOR_CONSTANTS = calculateMotorConstants(32.67256356,2.43,0,12);
+    public static final MotorConstants MOTOR_CONSTANTS = calculateMotorConstants(45.55,1.834,0,12);
     public static final double MOTOR_ANGULAR_MOMENT_OF_INERTIA = 0;
     public static final double LIFT_MASS = 0.5;
     private final VoltageRegulator regulator;
@@ -55,9 +52,9 @@ public class LinearSlidePIDWithVelocity {
     private final ElapsedTime profileTimer;
     private PIDFController controller;
     private boolean isMotionProfillingBeingUsed = true;
-    public LinearSlidePIDWithVelocity(HardwareMap hardwareMap) {
+    public LinearSlidePIDWithVelocity435Motor(HardwareMap hardwareMap) {
         Realizer.realize(this, hardwareMap);
-        controller = new PIDFController(new PIDCoefficients(5.0, 0, 0.05),//1.0,0.0,0.08
+        controller = new PIDFController(new PIDCoefficients(10.0, 0, 0),//1.0,0.0,0.08
                 MOTOR_CONSTANTS.kB / (diameterOfSpool/2),
                 (MOTOR_ANGULAR_MOMENT_OF_INERTIA + LIFT_MASS*Math.pow((diameterOfSpool/2),2)) / (diameterOfSpool/2),
                 MOTOR_CONSTANTS.kStatic,
@@ -104,9 +101,7 @@ public class LinearSlidePIDWithVelocity {
     public double getVelocity() {return metersPerTick * Lift.getVelocity();}
     public void setTargetPosition(double height) {
         isMotionProfillingBeingUsed = false;
-        if(height<=maxHeight || height>=minHeight) {
-            controller.setTargetPosition(height);
-        }
+        controller.setTargetPosition(height);
 
     }
     public void goToZero()
@@ -148,7 +143,7 @@ public class LinearSlidePIDWithVelocity {
             }
             //adjust slide state
             //if(Math.abs(getCurrentPosition() - targetState.getX())<= 0.02)
-            if (Math.abs(getCurrentPosition() - profile.end().getX()) <= 0.03) {
+            if (Math.abs(getCurrentPosition() - profile.end().getX()) <= 0.01) {
                 LinearSlideMode = LinearSlideStates.Idle;
             }
             if(!liftMagneticSwitch.getState()){

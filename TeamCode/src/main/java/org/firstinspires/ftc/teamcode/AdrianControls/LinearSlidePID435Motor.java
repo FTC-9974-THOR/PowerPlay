@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.ftc9974.thorcore.meta.Realizer;
 import org.ftc9974.thorcore.meta.annotation.Hardware;
 
-public class LinearSlidePID {
+public class LinearSlidePID435Motor {
 
     @Hardware(name="SlideMotor")
     public DcMotorEx Lift;
@@ -19,9 +19,9 @@ public class LinearSlidePID {
     private static final double maxHeight = 0.6125; // also meters
     private PIDFController controller;
 
-    public LinearSlidePID(HardwareMap hardwareMap) {
+    public LinearSlidePID435Motor(HardwareMap hardwareMap) {
         Realizer.realize(this, hardwareMap);
-        controller = new PIDFController(new PIDCoefficients(5, 0, 0.05));
+        controller = new PIDFController(new PIDCoefficients(2, 0, 0));
         Lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         Lift.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         Lift.setDirection(DcMotorEx.Direction.REVERSE);
