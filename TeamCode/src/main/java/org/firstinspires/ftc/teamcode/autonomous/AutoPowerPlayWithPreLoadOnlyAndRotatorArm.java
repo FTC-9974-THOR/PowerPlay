@@ -198,7 +198,7 @@ public class AutoPowerPlayWithPreLoadOnlyAndRotatorArm extends LinearOpMode {
         }
 
         if (isStopRequested()) return;
-        claw.moveClawOpen(false);
+        claw.CloseClaw();
         sleep(500);
         //linearSlide.moveToLowPole();
         linearSlide.moveToMiddlePole();
@@ -262,7 +262,7 @@ public class AutoPowerPlayWithPreLoadOnlyAndRotatorArm extends LinearOpMode {
                     break;
 
                 case placeTheConeInFirstPole:
-                    claw.moveClawOpen(true);
+                    claw.OpenClaw();
                     sleep(500);
                     currentState = State.forwardTowardsParking;
                     //turret.turretGoHome(teamColor);

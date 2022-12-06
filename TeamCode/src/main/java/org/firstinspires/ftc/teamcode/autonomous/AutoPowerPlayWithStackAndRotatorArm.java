@@ -219,7 +219,7 @@ public class AutoPowerPlayWithStackAndRotatorArm extends LinearOpMode {
         }
 
         if (isStopRequested()) return;
-        claw.moveClawOpen(false);
+        claw.CloseClaw();
         sleep(500);
         //linearSlide.moveToLowPole();
         linearSlide.moveToMiddlePole();
@@ -283,7 +283,7 @@ public class AutoPowerPlayWithStackAndRotatorArm extends LinearOpMode {
                     break;
 
                 case placeTheConeInFirstPole:
-                    claw.moveClawOpen(true);
+                    claw.OpenClaw();
                     sleep(500);
                     currentState = State.forwardOverShootForSignal;
                     //turret.turretGoHome(teamColor);
@@ -316,7 +316,7 @@ public class AutoPowerPlayWithStackAndRotatorArm extends LinearOpMode {
                     if(!drive.isBusy())
                     {
                         currentState = State.pickupSecondCone;
-                        claw.moveClawOpen(false);
+                        claw.CloseClaw();
                         sleep(500);
                         linearSlide.moveToLevelToRaiseTheConeFromStack();
 
@@ -357,7 +357,7 @@ public class AutoPowerPlayWithStackAndRotatorArm extends LinearOpMode {
                     }
                     break;
                 case placeTheConeInSecondPole:
-                    claw.moveClawOpen(true);
+                    claw.OpenClaw();
                     sleep(500);
                     currentState = State.goToTheParkingPosition;
                     //turret.turretGoHome(teamColor);

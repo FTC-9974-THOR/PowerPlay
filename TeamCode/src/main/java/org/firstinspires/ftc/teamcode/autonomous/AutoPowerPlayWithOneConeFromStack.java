@@ -223,7 +223,7 @@ public class AutoPowerPlayWithOneConeFromStack extends LinearOpMode {
         }
 
         if (isStopRequested()) return;
-        claw.moveClawOpen(false);
+        claw.CloseClaw();
         sleep(500);
         linearSlide.moveToLowPole();
         currentState = State.raiseTheLinearSlide;
@@ -278,7 +278,7 @@ public class AutoPowerPlayWithOneConeFromStack extends LinearOpMode {
                     break;
 
                 case placeTheConeInFirstPole:
-                    claw.moveClawOpen(true);
+                    claw.OpenClaw();
                     sleep(500);
                     currentState = State.homeTheTurretAndLowerTheLinearSlide;
                     //turret.turretGoHome(teamColor);
@@ -318,7 +318,7 @@ public class AutoPowerPlayWithOneConeFromStack extends LinearOpMode {
                     if(!drive.isBusy() && !linearSlide.isBusy())
                     {
                         currentState = State.pickupSecondCone;
-                        claw.moveClawOpen(false);
+                        claw.CloseClaw();
                         sleep(500);
                         linearSlide.moveToLevelToRaiseTheConeFromStack();
 
@@ -375,7 +375,7 @@ public class AutoPowerPlayWithOneConeFromStack extends LinearOpMode {
                     if(!linearSlide.isBusy())
                     {
                         sleep(500);
-                        claw.moveClawOpen(true);
+                        claw.OpenClaw();
                         sleep(500);
                         turret.turretGoHomeWithVoltage();
                         turret.update();

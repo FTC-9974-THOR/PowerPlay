@@ -193,7 +193,7 @@ public class AutoPowerPlayWithPreLoadOnly extends LinearOpMode {
         }
 
         if (isStopRequested()) return;
-        claw.moveClawOpen(false);
+        claw.CloseClaw();
         sleep(500);
         linearSlide.moveToLowPole();
         currentState = State.raiseTheLinearSlide;
@@ -248,7 +248,7 @@ public class AutoPowerPlayWithPreLoadOnly extends LinearOpMode {
                     break;
 
                 case placeTheConeInFirstPole:
-                    claw.moveClawOpen(true);
+                    claw.OpenClaw();
                     sleep(500);
                     currentState = State.homeTheTurretAndLowerTheLinearSlide;
                     //turret.turretGoHome(teamColor);

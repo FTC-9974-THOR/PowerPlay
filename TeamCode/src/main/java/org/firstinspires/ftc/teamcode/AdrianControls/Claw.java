@@ -21,6 +21,7 @@ public class Claw {
     }
 // This is a function that is called in autonomous, but could be called in Teleop too
 //Basically, I am taking the position you want to go to, either one or two, and using that to determine the power of the motor.
+    /*
     public void moveClawOpen( boolean open) {
         if (open == true)
         {
@@ -31,6 +32,15 @@ public class Claw {
         {
             clawServo.setPosition(CLAW_CLOSED);
         }
+    }
+     */
+    public void OpenClaw()
+    {
+        clawServo.setPosition(CLAW_OPEN);
+    }
+    public void CloseClaw()
+    {
+        clawServo.setPosition(CLAW_CLOSED);
     }
 
 }
