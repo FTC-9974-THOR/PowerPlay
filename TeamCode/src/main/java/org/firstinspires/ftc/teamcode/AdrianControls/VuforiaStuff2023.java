@@ -52,9 +52,11 @@ public class VuforiaStuff2023 {
         int RedDetectiongreenThreshold = 190;
         int RedDetectionblueThreshold = 160;
         //ForGreenDectection Thresholds
-        int GreenDetectionredThreshold = 190;
-        int GreenDetectiongreenThreshold = 100;
-        int GreenDetectionblueThreshold = 190;
+        int GreenDetectionredThreshold = 150;
+       // int GreenDetectiongreenThreshold = 100;
+        int GreenDetectiongreenThreshold = 110;
+
+        int GreenDetectionblueThreshold = 150;
         //ForBlueDectection Thresholds
         int BlueDetectionredThreshold = 190;
         int BlueDetectiongreenThreshold = 190;
@@ -68,7 +70,9 @@ public class VuforiaStuff2023 {
         int PurpleDetectiongreenThreshold = 150;
         int PurpleDetectionblueThreshold = 90;
 
+        //region start Crop Variable With Turrent Design with Robot starting in One Corner
         //Crop Variables Start
+        /*
         double cropStartXLeft = 64.0;
         double cropStartYLeft = 45.0;
         double cropWidthLeft = 60.0;
@@ -79,7 +83,25 @@ public class VuforiaStuff2023 {
         double cropHeightRight = 93.0;
         double MaxWidth=640.0;
         double MaxHeight=480.0;
+        */
         //Crop Variables End
+        //endregion
+
+        //region start Crop Variable With Rotating Arm Design with Robot starting in the Middle
+        //Crop Variables Start
+        double cropStartXLeft = 126.0;
+        double cropStartYLeft = 45.0;
+        double cropWidthLeft = 60.0;
+        double cropHeightLeft = 93.0;
+        double cropStartXRight = 126.0;
+        double cropStartYRight = 45.0;
+        double cropWidthRight = 60.0;
+        double cropHeightRight = 93.0;
+        double MaxWidth=640.0;
+        double MaxHeight=480.0;
+        
+        //Crop Variables End
+        //endregion
         Vuforia.setFrameFormat(PIXEL_FORMAT.RGB565, true);
         VuforiaLocalizer.CloseableFrame closeableFrame = null;
         this.vuforia.setFrameQueueCapacity(1);

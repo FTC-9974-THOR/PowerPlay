@@ -43,8 +43,8 @@ public class TeleOpClaw extends LinearOpMode {
             {
                 isClawOpened = false;
                 claw.moveClawOpen(false);
-                linearslide.moveTo(0.35);
-                turret.turretGoHome(1);
+                linearslide.moveToLowPole();
+                turret.turretGoHomeWithVoltage();
             }
             telemetry.addData("LiftPos", linearslide.getCurrentPosition());
             telemetry.update();

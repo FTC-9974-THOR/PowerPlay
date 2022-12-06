@@ -40,7 +40,10 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.AdrianControls.AdrianMecanumControls;
+import org.firstinspires.ftc.teamcode.AdrianControls.LinearSlidePIDWithVelocity;
+import org.firstinspires.ftc.teamcode.AdrianControls.RotatingArm;
 import org.firstinspires.ftc.teamcode.drive.MecanumDrive9974;
+import org.ftc9974.thorcore.util.MathUtilities;
 
 
 /**
@@ -67,6 +70,8 @@ public class AdrianTest extends LinearOpMode {
     private int LeftEncoderValue;
     private int SideEncoderValue;
 
+    RotatingArm rotatorArm;
+
 
     @Override
     public void runOpMode() {
@@ -76,20 +81,23 @@ public class AdrianTest extends LinearOpMode {
         waitForStart();
 
         MecanumDrive9974 drive = new MecanumDrive9974(hardwareMap);
-        drive.leftRear.setPower(0.5);
-        drive.leftFront.setPower(0.5);
-        drive.rightRear.setPower(0.5);
-        drive.rightFront.setPower(0.5);
-        sleep(10000);
+        LinearSlidePIDWithVelocity linearSlide = new LinearSlidePIDWithVelocity(hardwareMap);
+        rotatorArm = new RotatingArm(hardwareMap,linearSlide);
 
-
+        rotatorArm.rotateArmToPosition(RotatingArm.ROTATOR_BOTTOM);
+        sleep(4000);
+        rotatorArm.rotateArmToPosition(RotatingArm.ROTATOR_RIGHT);
+        sleep(4000);
+        //rotatorArm.rotateArmToPosition(RotatingArm.ROTATOR_TOP);
+        sleep(4000);
+        rotatorArm.rotateArmToPosition(RotatingArm.ROTATOR_LEFT);
+        sleep(4000);
+       // rotatorArm.rotateArmToPosition(rotatorArm.postionCalculator(724));
+        sleep((4000));
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-         /*   drive.leftRear.setPower(1.0);
-            sleep(1000);
-            drive.leftRear.setPower(0.0);
-*/
+
                  }
         }
 

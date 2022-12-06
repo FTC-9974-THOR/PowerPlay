@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.AdrianControls;
 
-import com.acmerobotics.roadrunner.control.PIDCoefficients;
-import com.acmerobotics.roadrunner.control.PIDFController;
+import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
@@ -16,17 +15,35 @@ public class Turret {
     public DcMotorEx turretMotor;
     @Hardware(name = "MagneticLimit")
     public DigitalChannel magneticLimitSwitch;
+    @Hardware(name = "TurretPotentiometer")
+    public AnalogInput turretPotentiometer;
     private boolean magneticNotTouched;
-    private double powerToApply = 0;
-    private double goHomePowerToApplyRight = 0.35;
-    private  double goHomePowerToApplyLeft = -0.35;
-    private double goHomePowerToApply = 0.0;
+    private double currentVoltageOfTurretPotentiometer;
+    private double powerToApplyRight = 0.45;
+    private  double powerToApplyLeft = -0.45;
+    private double powerToApply = 0.0;
     private boolean goHomeRequested = false;
-    private enum TurretStates
+    private double turnRightVoltageValue = 1.3189;
+    private double turnLeftVoltageValue = 0.66;
+    private double goHomeVoltageValue = 0.999;
+
+    /*
+    90right = 1.3689  V
+
+Center/Home = 0.999 V
+
+90left = 0.61 V
+     */
+    public enum TurretStates
     {
         Idle,
-        Moving
+        Right,
+        Left,
+        Home,
+        Teleop
     }
+
+
     public TurretStates TurretMode;
     public Turret(HardwareMap hardwareMap) {
         Realizer.realize(this, hardwareMap);
@@ -45,46 +62,112 @@ public class Turret {
         return TurretMode != Turret.TurretStates.Idle;
     }
 
+    public double getTurretPotentiometerVoltage()
+    {
+        currentVoltageOfTurretPotentiometer = (float)turretPotentiometer.getVoltage();
+        return currentVoltageOfTurretPotentiometer;
+    }
+    public void turretGoHomeWithVoltage()
+    {
+        if(getTurretPotentiometerVoltage() < goHomeVoltageValue)
+        {
+            powerToApply = powerToApplyRight;
+        }
+        else
+        {
+            powerToApply = powerToApplyLeft;
+        }
+        if(magneticLimitSwitch.getState() && Math.abs(getTurretPotentiometerVoltage() - goHomeVoltageValue) > 0.05)
+        {
+            TurretMode = TurretStates.Home;
+        }
+        else
+        {
+            TurretMode = TurretStates.Idle;
+            powerToApply = 0.0;
+        }
+    }
 
+    public void turretGoLeftWithVoltage()
+    {
+        TurretMode = TurretStates.Left;
+        if(getTurretPotentiometerVoltage()>turnLeftVoltageValue)
+        {
+            powerToApply = powerToApplyLeft;
+        }
+        else
+        {
+            TurretMode = TurretStates.Idle;
+            powerToApply = 0.0;
+        }
+    }
+    public void turretGoRightWithVoltage()
+    {
+        TurretMode = TurretStates.Right;
+        if(getTurretPotentiometerVoltage()<turnRightVoltageValue)
+        {
+            powerToApply = powerToApplyRight;
+        }
+        else
+        {
+            TurretMode = TurretStates.Idle;
+            powerToApply = 0.0;
+        }
+    }
+/*
     public void turretGoHome(int teamcolor)
     {
         if(teamcolor == -1)
         {
-            goHomePowerToApply = goHomePowerToApplyRight;
+            powerToApply = powerToApplyRight;
         }
         if(teamcolor == 1)
         {
-            goHomePowerToApply = goHomePowerToApplyLeft;
+            powerToApply = powerToApplyLeft;
         }
 
         if(magneticLimitSwitch.getState())
         {
-            goHomeRequested = true;
-            TurretMode = TurretStates.Moving;
+            TurretMode = TurretStates.Home;
         }
         else
         {
-            goHomeRequested = false;
             TurretMode = TurretStates.Idle;
         }
     }
-
+*/
     public void update() {
-        if(goHomeRequested)
+        if(TurretMode == TurretStates.Home)
         {
-            if(magneticLimitSwitch.getState())
-            {
-                powerToApply = goHomePowerToApply;
-
-            }
-            else
+            if((!magneticLimitSwitch.getState()) || Math.abs(getTurretPotentiometerVoltage() - goHomeVoltageValue) < 0.05 )
             {
                 powerToApply = 0;
-                goHomeRequested = false;
                 TurretMode = TurretStates.Idle;
             }
         }
-        turretMotor.setPower(powerToApply);
+
+        if(TurretMode == TurretStates.Left)
+        {
+            if(getTurretPotentiometerVoltage() < turnLeftVoltageValue )
+            {
+                powerToApply = 0.0;
+                TurretMode = TurretStates.Idle;
+            }
+
+        }
+
+        if(TurretMode == TurretStates.Right)
+        {
+            if(getTurretPotentiometerVoltage() > turnRightVoltageValue )
+            {
+                powerToApply = 0.0;
+                TurretMode = TurretStates.Idle;
+            }
+
+        }
+        if(TurretMode != TurretStates.Teleop ) {
+            turretMotor.setPower(powerToApply);
+        }
     }
 
 

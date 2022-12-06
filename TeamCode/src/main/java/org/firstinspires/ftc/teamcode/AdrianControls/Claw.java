@@ -10,7 +10,7 @@ import org.ftc9974.thorcore.meta.annotation.Hardware;
 import org.ftc9974.thorcore.util.MathUtilities;
 
 public class Claw {
-    public static final double CLAW_OPEN = MathUtilities.map(1000, 500, 2500, 0,1),
+    public static final double CLAW_OPEN = MathUtilities.map(1100, 500, 2500, 0,1),
             CLAW_CLOSED = MathUtilities.map(1485, 500, 2500, 0,1);
     @Hardware(name = "ClawServo")
 

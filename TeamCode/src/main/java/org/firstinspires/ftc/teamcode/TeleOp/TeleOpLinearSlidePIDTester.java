@@ -35,7 +35,7 @@ public class TeleOpLinearSlidePIDTester extends LinearOpMode {
         linearslide = new LinearSlidePIDWithVelocity(hardwareMap);
         waitForStart();
         //linearslide.setTargetPosition(0.25);
-        linearslide.moveTo(0.35);
+        linearslide.moveToLowPole();
 
         boolean hasItReachedTheTop = false;
         while(opModeIsActive()){
@@ -48,7 +48,7 @@ public class TeleOpLinearSlidePIDTester extends LinearOpMode {
             }
             if(hasItReachedTheTop)
             {
-                linearslide.moveTo(0.0);
+                linearslide.goToZero();
 
             }
             telemetry.addData("LiftPos", linearslide.getCurrentPosition());

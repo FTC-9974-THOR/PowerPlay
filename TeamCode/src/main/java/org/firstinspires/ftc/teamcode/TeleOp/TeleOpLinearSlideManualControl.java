@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.AdrianControls.LinearSlidePID;
 import org.firstinspires.ftc.teamcode.AdrianControls.LinearSlidePIDWithVelocity;
+import org.firstinspires.ftc.teamcode.AdrianControls.Turret;
 
 /**
  * This is a simple teleop routine for testing localization. Drive the robot around like a normal
@@ -19,10 +20,12 @@ import org.firstinspires.ftc.teamcode.AdrianControls.LinearSlidePIDWithVelocity;
 //@Disabled
 public class TeleOpLinearSlideManualControl extends LinearOpMode {
     LinearSlidePID linearslide;
+    Turret turret;
     //LinearSlidePIDWithVelocity linearslide;
     @Override
     public void runOpMode() throws InterruptedException {
         linearslide = new LinearSlidePID(hardwareMap);
+        turret = new Turret(hardwareMap);
         //linearslide = new LinearSlidePIDWithVelocity(hardwareMap);
         waitForStart();
         //linearslide.setTargetPosition(0.25);
@@ -38,8 +41,22 @@ public class TeleOpLinearSlideManualControl extends LinearOpMode {
             if(gamepad2.b)
             {
                 //linearslide.moveToMiddlePole();
+                turret.turretGoHomeWithVoltage();
+            }
+            if(gamepad2.a)
+            {
+                //linearslide.moveToMiddlePole();
+                turret.turretGoLeftWithVoltage();
+            }
+            if(gamepad2.y)
+            {
+                //linearslide.moveToMiddlePole();
+                turret.turretGoRightWithVoltage();
             }
             telemetry.addData("LiftPos", linearslide.getCurrentPosition());
+            telemetry.addData("Turret Voltage", turret.getTurretPotentiometerVoltage());
+            telemetry.addData("TurretSwitchPressed", turret.magneticLimitSwitch.getState());
+            turret.update();
             telemetry.update();
 
         }

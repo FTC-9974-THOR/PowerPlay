@@ -15,6 +15,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.teamcode.AdrianControls.Claw;
 import org.firstinspires.ftc.teamcode.AdrianControls.LinearSlidePIDWithVelocity;
+import org.firstinspires.ftc.teamcode.AdrianControls.RotatingArm;
 import org.firstinspires.ftc.teamcode.AdrianControls.Turret;
 import org.firstinspires.ftc.teamcode.AdrianControls.VuforiaStuff2023;
 import org.firstinspires.ftc.teamcode.drive.MecanumDrive9974;
@@ -40,7 +41,7 @@ import org.firstinspires.ftc.teamcode.drive.advanced.PoseStorage;
  */
 @Autonomous(group = "advanced")
 @Disabled
-public class AutoPowerPlayWithPreLoadOnly extends LinearOpMode {
+public class AutoPowerPlayWithPreLoadOnlyAndRotatorArm extends LinearOpMode {
 
     // This enum defines our "state"
     // This is essentially just defines the possible steps our program will take
@@ -50,10 +51,8 @@ public class AutoPowerPlayWithPreLoadOnly extends LinearOpMode {
         raiseTheLinearSlide,
         initalForwardTowardsFirstPole,
         placeTheConeInFirstPole,
-        homeTheTurretAndLowerTheLinearSlide,
-        forwardTowardsParkingOvershootForSignal,
         forwardTowardsParking,
-        lowerTheLinearSlideToZero,
+        lowerTheRotatorAndSlide,
         parkPosition
 
 
@@ -72,7 +71,7 @@ public class AutoPowerPlayWithPreLoadOnly extends LinearOpMode {
     public VuforiaStuff2023 vuforiaStuff;
     private TFObjectDetector tfod;
 
-    public AutoPowerPlayWithPreLoadOnly(int TeamColor, boolean SlideToSide) {
+    public AutoPowerPlayWithPreLoadOnlyAndRotatorArm(int TeamColor, boolean SlideToSide) {
         super();
         teamColor = TeamColor;
         slideToSide = SlideToSide;
@@ -90,7 +89,9 @@ public class AutoPowerPlayWithPreLoadOnly extends LinearOpMode {
         Lift lift = new Lift(hardwareMap);
         LinearSlidePIDWithVelocity linearSlide = new LinearSlidePIDWithVelocity(hardwareMap);
         Claw claw = new Claw(hardwareMap);
-        Turret turret = new Turret(hardwareMap);
+        //Turret turret = new Turret(hardwareMap);
+        RotatingArm rotatingArm = new RotatingArm(hardwareMap, linearSlide);
+
         // Initialize MecanumDrive9974
         MecanumDrive9974 drive = new MecanumDrive9974(hardwareMap);
         // Define our start pose
@@ -103,7 +104,7 @@ public class AutoPowerPlayWithPreLoadOnly extends LinearOpMode {
        // MagneticSwitch turret = new MagneticSwitch(hardwareMap);
         vuforia = ClassFactory.getInstance().createVuforia(parameters);
         vuforiaStuff = new VuforiaStuff2023(vuforia);
-        Pose2d startPose = new Pose2d(-35, -72 , Math.toRadians(90));
+        Pose2d startPose = new Pose2d(-36, -72 , Math.toRadians(90));
 
         // Set inital pose
         drive.setPoseEstimate(startPose);
@@ -111,13 +112,17 @@ public class AutoPowerPlayWithPreLoadOnly extends LinearOpMode {
         // Let's define our trajectories
         //region TRAJECTORIES
         Trajectory initialForwardTowardsFirstPole = drive.trajectoryBuilder(startPose)
-                .lineTo(new Vector2d(-35, -54.5 ))
+                //.lineTo(new Vector2d(-36, -64 ))// this is for the low pole.
+                .lineTo(new Vector2d(-36, -42 )) // this is for the middle pole.
                 .build();
-        Trajectory forwardTowardsParkingOverShootForSignal = drive.trajectoryBuilder(initialForwardTowardsFirstPole.end())
-                .lineTo(new Vector2d(-35, -38.75 ))
+        Trajectory initialForwardToLowerTheRotator = drive.trajectoryBuilder(initialForwardTowardsFirstPole.end())
+                .lineTo(new Vector2d(-36, -58 ))
+                .build();
+        Trajectory forwardTowardsParkingOverShootForSignal = drive.trajectoryBuilder(initialForwardToLowerTheRotator.end())
+                .lineTo(new Vector2d(-36, -38.75 ))
                 .build();
         Trajectory forwardTowardsParking = drive.trajectoryBuilder(forwardTowardsParkingOverShootForSignal.end())
-                .lineTo(new Vector2d(-35, -44.75 ))
+                .lineTo(new Vector2d(-36, -44.75 ))
                 .build();
         Trajectory parkPositionOneDot = drive.trajectoryBuilder(forwardTowardsParking.end())
                 .strafeTo(new Vector2d(-60, -44.75 ))
@@ -195,7 +200,16 @@ public class AutoPowerPlayWithPreLoadOnly extends LinearOpMode {
         if (isStopRequested()) return;
         claw.moveClawOpen(false);
         sleep(500);
-        linearSlide.moveToLowPole();
+        //linearSlide.moveToLowPole();
+        linearSlide.moveToMiddlePole();
+        if(teamColor <0) {
+            rotatingArm.setRotatorArmPositionRaw(rotatingArm.ROTATOR_LEFT);
+        }
+        else
+        {
+            rotatingArm.setRotatorArmPositionRaw(rotatingArm.ROTATOR_RIGHT);
+
+        }
         currentState = State.raiseTheLinearSlide;
 
 
@@ -224,7 +238,7 @@ public class AutoPowerPlayWithPreLoadOnly extends LinearOpMode {
                     break;
 //region States For Auto
                 case raiseTheLinearSlide:
-                    if(!linearSlide.isBusy())
+                    if(!linearSlide.isBusy() && !rotatingArm.isBusy())
                     {
                         drive.followTrajectoryAsync(initialForwardTowardsFirstPole);
                         currentState = State.initalForwardTowardsFirstPole;
@@ -250,40 +264,23 @@ public class AutoPowerPlayWithPreLoadOnly extends LinearOpMode {
                 case placeTheConeInFirstPole:
                     claw.moveClawOpen(true);
                     sleep(500);
-                    currentState = State.homeTheTurretAndLowerTheLinearSlide;
+                    currentState = State.forwardTowardsParking;
                     //turret.turretGoHome(teamColor);
-                    turret.turretGoHomeWithVoltage();
-                    turret.update();
-                    sleep(250);
-                    linearSlide.moveToAboveTheCameraHeight();
-                    //drive.followTrajectoryAsync(forwardTowardsParkingOverShootForSignal);
-                    break;
-
-                case homeTheTurretAndLowerTheLinearSlide:
-                    if(!turret.isBusy() && !linearSlide.isBusy())
-                    {
-                        currentState = State.forwardTowardsParkingOvershootForSignal;
-                        drive.followTrajectoryAsync(forwardTowardsParkingOverShootForSignal);
-
-                    }
-                    break;
-                case  forwardTowardsParkingOvershootForSignal:
-                    if(!drive.isBusy())
-                    {
-                        currentState = State.forwardTowardsParking;
-                        drive.followTrajectoryAsync(forwardTowardsParking);
-                    }
+                    drive.followTrajectoryAsync(forwardTowardsParking);
                     break;
 
                 case forwardTowardsParking:
                     if(!drive.isBusy())
                     {
-                        linearSlide.goToZero();
-                        currentState = State.lowerTheLinearSlideToZero;
+                        rotatingArm.setRotatorArmPositionRaw(RotatingArm.ROTATOR_BOTTOM);
+                        linearSlide.moveToAboveTheCameraHeight();
+                        currentState = State.lowerTheRotatorAndSlide;
                     }
                     break;
-                case lowerTheLinearSlideToZero:
-                    if(!linearSlide.isBusy()) {
+
+                case lowerTheRotatorAndSlide:
+                    if(!linearSlide.isBusy() && !rotatingArm.isBusy()) {
+                        linearSlide.goToZero();
                         if (pos == VuforiaStuff2023.sleeveSignal.ONEDOT) {
                             currentState = State.parkPosition;
                             drive.followTrajectoryAsync(parkPositionOneDot);
@@ -311,7 +308,7 @@ public class AutoPowerPlayWithPreLoadOnly extends LinearOpMode {
                     }
                     break;
                 case parkPosition:
-                    if (!drive.isBusy() && !drive.IsArmLifterBusy()) {
+                    if (!drive.isBusy() && !drive.IsArmLifterBusy() && !linearSlide.isLiftAboveCameraHeight()) {
                         currentState = State.IDLE;
                         ////drive.ArmLifterAsyncUpdate(levelArmShouldGoTo);
                        // drive.followTrajectoryAsync(goTowardsSecondPoleFirst);
@@ -328,7 +325,7 @@ public class AutoPowerPlayWithPreLoadOnly extends LinearOpMode {
             // We update our lift PID continuously in the background, regardless of state
             lift.update();
             linearSlide.update();
-            turret.update();
+            rotatingArm.update();
             //drive.ArmLifterAsyncUpdate(levelArmShouldGoTo);
 
             // Read pose

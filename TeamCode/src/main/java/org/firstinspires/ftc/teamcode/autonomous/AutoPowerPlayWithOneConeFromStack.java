@@ -20,6 +20,8 @@ import org.firstinspires.ftc.teamcode.AdrianControls.VuforiaStuff2023;
 import org.firstinspires.ftc.teamcode.drive.MecanumDrive9974;
 import org.firstinspires.ftc.teamcode.drive.advanced.PoseStorage;
 
+import java.util.Vector;
+
 /**
  * This opmode explains how you follow multiple trajectories in succession, asynchronously. This
  * allows you to run your own logic beside the drive.update() command. This enablses one to run
@@ -38,6 +40,7 @@ import org.firstinspires.ftc.teamcode.drive.advanced.PoseStorage;
  * to supercharge your code. This can be much cleaner by abstracting many of these things. This
  * opmode only serves as an initial starting point.
  */
+
 @Autonomous(group = "advanced")
 @Disabled
 public class AutoPowerPlayWithOneConeFromStack extends LinearOpMode {
@@ -50,9 +53,19 @@ public class AutoPowerPlayWithOneConeFromStack extends LinearOpMode {
         raiseTheLinearSlide,
         initalForwardTowardsFirstPole,
         placeTheConeInFirstPole,
+        forwardTowardOvershoot,
         homeTheTurretAndLowerTheLinearSlide,
-        forwardTowardsParkingOvershootForSignal,
-        forwardTowardsParking,
+        forwardTowardsYConeStack,
+        forwardTowardsXConeStack,
+        pickupSecondCone,
+        backLittleTowardsSecondPole,
+        backTowardsSecondPole,
+        turnTheTurretTowardsSecondPole,
+        raiseTheLinearSlideSecondPole,
+        turnTheTurretAwaySecondPole,
+        moveForwardToPlaceSecondPole,
+        dropTheSecondCone,
+        moveBackFromSecondPole,
         lowerTheLinearSlideToZero,
         parkPosition
 
@@ -103,7 +116,7 @@ public class AutoPowerPlayWithOneConeFromStack extends LinearOpMode {
        // MagneticSwitch turret = new MagneticSwitch(hardwareMap);
         vuforia = ClassFactory.getInstance().createVuforia(parameters);
         vuforiaStuff = new VuforiaStuff2023(vuforia);
-        Pose2d startPose = new Pose2d(-35, -72 , Math.toRadians(90));
+        Pose2d startPose = new Pose2d(-36, -72 , Math.toRadians(90));
 
         // Set inital pose
         drive.setPoseEstimate(startPose);
@@ -111,26 +124,43 @@ public class AutoPowerPlayWithOneConeFromStack extends LinearOpMode {
         // Let's define our trajectories
         //region TRAJECTORIES
         Trajectory initialForwardTowardsFirstPole = drive.trajectoryBuilder(startPose)
-                .lineTo(new Vector2d(-35, -54.5 ))
+                .lineTo(new Vector2d(-36, -54.5 ))
                 .build();
-        Trajectory forwardTowardsParkingOverShootForSignal = drive.trajectoryBuilder(initialForwardTowardsFirstPole.end())
-                .lineTo(new Vector2d(-35, -38.75 ))
+        Trajectory forwardTowardsOvershoot = drive.trajectoryBuilder(initialForwardTowardsFirstPole.end())
+                .lineTo(new Vector2d(-36, -12 ))
                 .build();
-        Trajectory forwardTowardsParking = drive.trajectoryBuilder(forwardTowardsParkingOverShootForSignal.end())
-                .lineTo(new Vector2d(-35, -44.75 ))
+        Trajectory forwardTowardsYConeStack = drive.trajectoryBuilder(forwardTowardsOvershoot.end())
+                .lineTo(new Vector2d(-36, -22.5 ))
                 .build();
-        Trajectory parkPositionOneDot = drive.trajectoryBuilder(forwardTowardsParking.end())
-                .strafeTo(new Vector2d(-60, -44.75 ))
+
+        Trajectory forwardTowardsXConeStack = drive.trajectoryBuilder(forwardTowardsYConeStack.end().plus(new Pose2d(0,0,Math.toRadians(90))))
+                .lineTo(new Vector2d(-60.35, -22.5))
                 .build();
-        Trajectory parkPositionTwoDot = drive.trajectoryBuilder(forwardTowardsParking.end())
+        Trajectory backLittleTowardsSecondPole = drive.trajectoryBuilder(forwardTowardsXConeStack.end())
+                .lineTo(new Vector2d(-58, -22.5 ))
+//                .lineToLinearHeading(new Pose2d(-58, -22.5,Math.toRadians(185) ))
+                .build();
+        Trajectory backTowardsSecondPole = drive.trajectoryBuilder(backLittleTowardsSecondPole.end())
+                .lineTo(new Vector2d(-50.25, -22.5 ))
+//                .lineToLinearHeading(new Pose2d(-50.25, -22.5,Math.toRadians(185) ))
+                .build();
+        Trajectory parkPositionOneDot = drive.trajectoryBuilder(backTowardsSecondPole.end())
+                .lineTo(new Vector2d(-58, -22.5 ))
+//                .lineToLinearHeading(new Pose2d(-58, -22,Math.toRadians(185) ))
+                .build();
+        Trajectory parkPositionTwoDot = drive.trajectoryBuilder(backTowardsSecondPole.end())
                 //.splineToConst
                 // antHeading(new Vector2d( -65,-72), Math.toRadians(90))
-                .strafeTo(new Vector2d(-37, -44.75 ))
+                .lineTo(new Vector2d(-38, -22.5 ))
+//                .lineToLinearHeading(new Pose2d(-38, -22,Math.toRadians(185) ))
+                //.strafeTo(new Vector2d(-38, -22 ))
                 .build();
-        Trajectory parkPositionThreeDot = drive.trajectoryBuilder(forwardTowardsParking.end())
+        Trajectory parkPositionThreeDot = drive.trajectoryBuilder(backTowardsSecondPole.end())
                 //.splineToConst
                 // antHeading(new Vector2d( -65,-72), Math.toRadians(90))
-                .strafeTo(new Vector2d(-10, -44.75 ))
+                .lineTo(new Vector2d(-13, -22.5 ))
+//                .lineToLinearHeading(new Pose2d(-13, -22,Math.toRadians(185) ))
+                //.strafeTo(new Vector2d(-11, -22 ))
                 .build();
         //endregion TRAJECTORIES
 
@@ -194,6 +224,7 @@ public class AutoPowerPlayWithOneConeFromStack extends LinearOpMode {
 
         if (isStopRequested()) return;
         claw.moveClawOpen(false);
+        sleep(500);
         linearSlide.moveToLowPole();
         currentState = State.raiseTheLinearSlide;
 
@@ -250,7 +281,10 @@ public class AutoPowerPlayWithOneConeFromStack extends LinearOpMode {
                     claw.moveClawOpen(true);
                     sleep(500);
                     currentState = State.homeTheTurretAndLowerTheLinearSlide;
-                    turret.turretGoHome(teamColor);
+                    //turret.turretGoHome(teamColor);
+                    turret.turretGoHomeWithVoltage();
+                    turret.update();
+                    sleep(250);
                     linearSlide.moveToAboveTheCameraHeight();
                     //drive.followTrajectoryAsync(forwardTowardsParkingOverShootForSignal);
                     break;
@@ -258,24 +292,108 @@ public class AutoPowerPlayWithOneConeFromStack extends LinearOpMode {
                 case homeTheTurretAndLowerTheLinearSlide:
                     if(!turret.isBusy() && !linearSlide.isBusy())
                     {
-                        currentState = State.forwardTowardsParkingOvershootForSignal;
-                        drive.followTrajectoryAsync(forwardTowardsParkingOverShootForSignal);
+                        currentState = State.forwardTowardOvershoot;
+                        drive.followTrajectoryAsync(forwardTowardsOvershoot);
 
                     }
                     break;
-                case  forwardTowardsParkingOvershootForSignal:
+                case forwardTowardOvershoot:
                     if(!drive.isBusy())
                     {
-                        currentState = State.forwardTowardsParking;
-                        drive.followTrajectoryAsync(forwardTowardsParking);
+                        currentState = State.forwardTowardsYConeStack;
+                        drive.followTrajectoryAsync(forwardTowardsYConeStack);
+
                     }
                     break;
-
-                case forwardTowardsParking:
+                case forwardTowardsYConeStack:
                     if(!drive.isBusy())
                     {
+                        currentState = State.forwardTowardsXConeStack;
+                        drive.turn(Math.toRadians(95));
+                        drive.followTrajectoryAsync(forwardTowardsXConeStack);
+                        linearSlide.moveToLevel5ConeStack();
+                    }
+                    break;
+                case forwardTowardsXConeStack:
+                    if(!drive.isBusy() && !linearSlide.isBusy())
+                    {
+                        currentState = State.pickupSecondCone;
+                        claw.moveClawOpen(false);
+                        sleep(500);
+                        linearSlide.moveToLevelToRaiseTheConeFromStack();
+
+                    }
+                    break;
+                case pickupSecondCone:
+                    if(!linearSlide.isBusy())
+                    {
+                        currentState = State.backLittleTowardsSecondPole;
+                        drive.followTrajectoryAsync(backLittleTowardsSecondPole);
+
+                    }
+                    break;
+                case backLittleTowardsSecondPole:
+                    if(!drive.isBusy())
+                    {
+                        currentState = State.backTowardsSecondPole;
+                        drive.followTrajectoryAsync(backTowardsSecondPole);
+                        linearSlide.moveToLowPole();
+
+                    }
+                    break;
+                case backTowardsSecondPole:
+                    if(!drive.isBusy() && !linearSlide.isBusy())
+                    {
+                        currentState = State.turnTheTurretTowardsSecondPole;
+                        if(teamColor>0)
+                        {
+                            turret.turretGoLeftWithVoltage();
+                        }
+                        else
+                        {
+                            turret.turretGoRightWithVoltage();
+                        }
+                        turret.update();
+
+//                        drive.followTrajectoryAsync(forwardTowardsYConeStack);
+
+                    }
+                    break;
+                case turnTheTurretTowardsSecondPole:
+                    if(!turret.isBusy())
+                    {
+                        linearSlide.moveToLowPole();
+                        currentState = State.raiseTheLinearSlideSecondPole;
+
+
+
+//                        drive.followTrajectoryAsync(forwardTowardsYConeStack);
+
+                    }
+                    break;
+                case raiseTheLinearSlideSecondPole:
+                    if(!linearSlide.isBusy())
+                    {
+                        sleep(500);
+                        claw.moveClawOpen(true);
+                        sleep(500);
+                        turret.turretGoHomeWithVoltage();
+                        turret.update();
+                        sleep(250);
                         linearSlide.goToZero();
+                        currentState = State.turnTheTurretAwaySecondPole;
+
+
+//                        drive.followTrajectoryAsync(forwardTowardsYConeStack);
+                    }
+                    break;
+                case turnTheTurretAwaySecondPole:
+                    if(!turret.isBusy() && !linearSlide.isBusy())
+                    {
                         currentState = State.lowerTheLinearSlideToZero;
+
+
+//                        drive.followTrajectoryAsync(forwardTowardsYConeStack);
                     }
                     break;
                 case lowerTheLinearSlideToZero:

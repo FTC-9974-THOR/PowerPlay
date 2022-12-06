@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
 import org.firstinspires.ftc.teamcode.AdrianControls.Claw;
 import org.firstinspires.ftc.teamcode.AdrianControls.LinearSlidePIDWithVelocity;
+import org.firstinspires.ftc.teamcode.AdrianControls.RotatingArm;
 import org.firstinspires.ftc.teamcode.AdrianControls.Turret;
 import org.firstinspires.ftc.teamcode.drive.MecanumDrive9974;
 
@@ -27,12 +28,14 @@ public class TeleOpPowerPlay9974 extends LinearOpMode {
         LinearSlidePIDWithVelocity linearslide;
         Claw claw;
         Turret turret;
+        RotatingArm rotatorArm;
         waitForStart();
         claw = new Claw(hardwareMap);
         linearslide = new LinearSlidePIDWithVelocity(hardwareMap);
         MecanumDrive9974 drive = new MecanumDrive9974(hardwareMap);
         turret = new Turret(hardwareMap);
-       // drive.armMinPowerDuringHold = 0.176;
+        rotatorArm = new RotatingArm(hardwareMap,linearslide);
+        // drive.armMinPowerDuringHold = 0.176;
         PIDFCoefficients SHOOTER_PID = new PIDFCoefficients(30, 0, 0, 13);
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
        // drive.SlideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -49,7 +52,7 @@ public class TeleOpPowerPlay9974 extends LinearOpMode {
         boolean gamepad2_B_WasPressed = false;
         boolean gamepad2_X_WasPressed = false;
 
-
+        rotatorArm.rotatingArmServo.setPosition(rotatorArm.ROTATOR_BOTTOM);
         while (opModeIsActive()) {
             if(gamepad2.right_stick_y!=0)
             {
@@ -131,16 +134,49 @@ public class TeleOpPowerPlay9974 extends LinearOpMode {
             {
 
                 linearslide.moveToAboveTheCameraHeight();
+                rotatorArm.RotatorArmMode = RotatingArm.RotatorArmStates.Moving;
+                rotatorArm.setRotatorArmPositionRaw(rotatorArm.ROTATOR_BOTTOM);
+                //turret.turretGoHomeWithVoltage();
+            }
+            if(gamepad2.dpad_right)
+            {
+                rotatorArm.RotatorArmMode = RotatingArm.RotatorArmStates.Moving;
+                rotatorArm.setRotatorArmPositionRaw(rotatorArm.ROTATOR_RIGHT);
+
+            }
+            if(gamepad2.dpad_left)
+            {
+                rotatorArm.RotatorArmMode = RotatingArm.RotatorArmStates.Moving;
+                rotatorArm.setRotatorArmPositionRaw(rotatorArm.ROTATOR_LEFT);
+
+            }
+            if(gamepad2.dpad_up)
+            {
+                rotatorArm.RotatorArmMode = RotatingArm.RotatorArmStates.Moving;
+                rotatorArm.setRotatorArmPositionRaw(rotatorArm.ROTATOR_BOTTOM);
+
             }
 
-
+            if(!(gamepad2.left_trigger>0)) {
+                if(Math.abs(gamepad2.left_stick_x)>0.0){
+                    rotatorArm.RotatorArmMode = RotatingArm.RotatorArmStates.Teleop;
+                    rotatorArm.setRotatorArmPositionTick(rotatorArm.getRotatorArmPositionTick() + gamepad2.left_stick_x * 10);
+                }
+            }
+            rotatorArm.update();
             if(linearslide.getPosition()>0.1 && gamepad2.left_trigger>0) {
                 if (gamepad2.left_stick_x > 0) {
                     turret.turretMotor.setPower(0.2);
+                    turret.TurretMode = Turret.TurretStates.Teleop;
+
                 } else if (gamepad2.left_stick_x < 0) {
                     turret.turretMotor.setPower(-0.2);
+                    turret.TurretMode = Turret.TurretStates.Teleop;
+
                 } else {
                     turret.turretMotor.setPower(0.0);
+                    turret.TurretMode = Turret.TurretStates.Idle;
+
                 }
             }
             else
@@ -233,6 +269,7 @@ public class TeleOpPowerPlay9974 extends LinearOpMode {
          */
 
             double powerToApply = 0.0;
+            turret.update();
             if(Math.abs(gamepad2.right_stick_y) > 0.00){
                 gamepad2_Y_WasPressed = false;
                 gamepad2_A_WasPressed = false;
@@ -252,6 +289,10 @@ public class TeleOpPowerPlay9974 extends LinearOpMode {
             telemetry.addData("JoystickValue", gamepad2.right_stick_y);
             telemetry.addData("LiftValue", linearslide.getCurrentPosition());
             telemetry.addData("TUrrentXValue",gamepad2.left_stick_x);
+            telemetry.addData("TurretPotentiometerVoltage", turret.getTurretPotentiometerVoltage());
+            telemetry.addData("isMotionProfillingBeingUsed", linearslide.isMotionProfillingBeingUsed);
+            telemetry.addData("PositionInTicks", rotatorArm.getRotatorArmPositionTick());
+
             telemetry.update();
             telemetry.update();
 
