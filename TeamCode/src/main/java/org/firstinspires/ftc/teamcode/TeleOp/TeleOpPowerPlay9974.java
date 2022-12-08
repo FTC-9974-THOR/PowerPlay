@@ -44,7 +44,7 @@ public class TeleOpPowerPlay9974 extends LinearOpMode {
       //  int armStartPosition = drive.SlideMotor.getCurrentPosition();
         int startPosition=0;
         int poistionOfArm =0;
-        double maxSpeedDriveTrainPercentage = 0.5;
+        double maxSpeedDriveTrainPercentage = 0.55;
 
        // drive.SlideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         boolean gamepad2_Y_WasPressed = false;
@@ -104,25 +104,43 @@ public class TeleOpPowerPlay9974 extends LinearOpMode {
 
             if(gamepad2.right_bumper)
             {
-             claw.moveClawOpen(true);
+             claw.OpenClaw();
             }
             if(gamepad2.left_bumper)
             {
-                claw.moveClawOpen(false);
+                claw.CloseClaw();
             }
             if(gamepad2.a)
             {
-                linearslide.moveToLowPole();
+                if(gamepad2.right_trigger>0) {
+                    linearslide.moveToLowPole();
+                }
+                else
+                {
+                    linearslide.moveToLowPoleTeleop();
+                }
             }
 
             if(gamepad2.b)
             {
-                linearslide.moveToMiddlePole();
+                if(gamepad2.right_trigger>0) {
+                    linearslide.moveToMiddlePole();
+                }
+                else
+                {
+                    linearslide.moveToMiddlePoleTeleop();
+                }
             }
 
             if(gamepad2.y)
             {
-                linearslide.moveToHighPole();
+                if(gamepad2.right_trigger>0) {
+                    linearslide.moveToHighPole();
+                }
+                else
+                {
+                    linearslide.moveToHighPoleTeleop();
+                }
             }
 
             if(gamepad2.x)

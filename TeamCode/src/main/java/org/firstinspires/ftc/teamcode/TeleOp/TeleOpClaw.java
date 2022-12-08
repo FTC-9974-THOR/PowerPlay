@@ -36,13 +36,13 @@ public class TeleOpClaw extends LinearOpMode {
         //linearslide.moveTo(0.35);
 
         boolean isClawOpened = true;
-        claw.moveClawOpen(true);
+        claw.OpenClaw();
         while(opModeIsActive()){
             //linearslide.update();
             if(isClawOpened)
             {
                 isClawOpened = false;
-                claw.moveClawOpen(false);
+                claw.CloseClaw();
                 linearslide.moveToLowPole();
                 turret.turretGoHomeWithVoltage();
             }

@@ -49,7 +49,11 @@ public class LinearSlidePIDWithVelocity {
     private static final double lowPoleHeight = 0.1;
     private static final double middlePoleHeight = 0.297;
     private static final double highPoleHeight = 0.506;
+    private static final double lowPoleHeightTeleop = 0.326;
+    private static final double middlePoleHeightTeleop = 0.523;
+    private static final double highPoleHeightTeleop = 0.732;
     private static final double level5ConeStackHeight = 0.140;
+    private static final double level4ConeStackHeight = 0.103;
     private static final double aboveTheCameraHeight = 0.1;
     private static final double levelToRaiseTheConeFromStack = 0.25;
     //endregion
@@ -120,7 +124,20 @@ public class LinearSlidePIDWithVelocity {
     {
         this.moveTo(highPoleHeight);
     }
+    public void moveToLowPoleTeleop()
+    {
+        this.moveTo(lowPoleHeightTeleop);
+    }
+    public void moveToMiddlePoleTeleop()
+    {
+        this.moveTo(middlePoleHeightTeleop);
+    }
+    public void moveToHighPoleTeleop()
+    {
+        this.moveTo(highPoleHeightTeleop);
+    }
     public void moveToLevel5ConeStack(){this.moveTo(level5ConeStackHeight);}
+    public void moveToLevel4ConeStack(){this.moveTo(level4ConeStackHeight);}
     public void moveToLevelToRaiseTheConeFromStack(){this.moveTo(levelToRaiseTheConeFromStack);}
     public void moveToAboveTheCameraHeight(){this.moveTo(aboveTheCameraHeight);}
     public double getPosition() {return metersPerTick * Lift.getCurrentPosition();}

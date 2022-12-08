@@ -42,7 +42,7 @@ import java.util.concurrent.TimeUnit;
  */
 @Autonomous(group = "advanced")
 @Disabled
-public class AutoPowerPlayWithStackAndRotatorArm extends LinearOpMode {
+public class AutoPowerPlayWithThreeConesAndRotatorArm extends LinearOpMode {
 
     // This enum defines our "state"
     // This is essentially just defines the possible steps our program will take
@@ -66,6 +66,7 @@ public class AutoPowerPlayWithStackAndRotatorArm extends LinearOpMode {
     }
     private int teamColor;//1=Left -1= Right
     private boolean slideToSide = false;
+    private int counterForAutoCycle = 1;
 
     private ElapsedTime runtime = new ElapsedTime();
     private static final String TFOD_MODEL_ASSET = "UltimateGoal.tflite";
@@ -78,7 +79,7 @@ public class AutoPowerPlayWithStackAndRotatorArm extends LinearOpMode {
     public VuforiaStuff2023 vuforiaStuff;
     private TFObjectDetector tfod;
 
-    public AutoPowerPlayWithStackAndRotatorArm(int TeamColor, boolean SlideToSide) {
+    public AutoPowerPlayWithThreeConesAndRotatorArm(int TeamColor, boolean SlideToSide) {
         super();
         teamColor = TeamColor;
         slideToSide = SlideToSide;
@@ -142,18 +143,29 @@ public class AutoPowerPlayWithStackAndRotatorArm extends LinearOpMode {
                 .lineTo(new Vector2d(-15*teamColor, -20.5))
 //                .lineToLinearHeading(new Pose2d(-50.25, -22.5,Math.toRadians(185) ))
                 .build();
-        Trajectory parkPositionOneDot = drive.trajectoryBuilder(backTowardsSecondPole.end())
+        Trajectory forwardTowardsXConeStackThirdPole = drive.trajectoryBuilder(backTowardsSecondPole.end())
+                .lineTo(new Vector2d(-59.5*teamColor, -20.5))
+                .build();
+        Trajectory backLittleTowardsThirdPole = drive.trajectoryBuilder(forwardTowardsXConeStackThirdPole.end())
+                .lineTo(new Vector2d(-58*teamColor, -20.5 ))
+//                .lineToLinearHeading(new Pose2d(-58, -22.5,Math.toRadians(185) ))
+                .build();
+        Trajectory backTowardsThirdPole = drive.trajectoryBuilder(backLittleTowardsThirdPole.end())
+                .lineTo(new Vector2d(-15*teamColor, -20.5))
+//                .lineToLinearHeading(new Pose2d(-50.25, -22.5,Math.toRadians(185) ))
+                .build();
+        Trajectory parkPositionOneDot = drive.trajectoryBuilder(backTowardsThirdPole.end())
                 .lineTo(new Vector2d(-58*teamColor, -20.5 ))
 //                .lineToLinearHeading(new Pose2d(-58, -22,Math.toRadians(185) ))
                 .build();
-        Trajectory parkPositionTwoDot = drive.trajectoryBuilder(backTowardsSecondPole.end())
+        Trajectory parkPositionTwoDot = drive.trajectoryBuilder(backTowardsThirdPole.end())
                 //.splineToConst
                 // antHeading(new Vector2d( -65,-72), Math.toRadians(90))
                 .lineTo(new Vector2d(-35*teamColor, -20.5 ))
 //                .lineToLinearHeading(new Pose2d(-38, -22,Math.toRadians(185) ))
                 //.strafeTo(new Vector2d(-38, -22 ))
                 .build();
-        Trajectory parkPositionThreeDot = drive.trajectoryBuilder(backTowardsSecondPole.end())
+        Trajectory parkPositionThreeDot = drive.trajectoryBuilder(backTowardsThirdPole.end())
                 //.splineToConst
                 // antHeading(new Vector2d( -65,-72), Math.toRadians(90))
                 .lineTo(new Vector2d(-13*teamColor, -20.5 ))
@@ -247,6 +259,8 @@ public class AutoPowerPlayWithStackAndRotatorArm extends LinearOpMode {
         ElapsedTime timer = new ElapsedTime();
         double timeToWaitBeforeBringingRotatingArmDownInMilliSeconds = 400;
         double timeToWaitBeforeBringingRotatingArmDownInMilliSecondsForShortDistance = 250;
+        double timeToWaitBeforeBringingRotatingArmDownBetweenCycles = 750;
+
 
         while (opModeIsActive() && !isStopRequested()) {
 
@@ -324,20 +338,48 @@ public class AutoPowerPlayWithStackAndRotatorArm extends LinearOpMode {
                     }
                     break;
                 case forwardTowardsXConeStack:
-                    if(!drive.isBusy())
-                    {
-                        currentState = State.pickupSecondCone;
-                        claw.CloseClaw();
-                        sleep(500);
-                        linearSlide.moveToLevelToRaiseTheConeFromStack();
+                    switch(counterForAutoCycle) {
+                        case 1:
+                            if (!drive.isBusy()) {
+                                currentState = State.pickupSecondCone;
+                                claw.CloseClaw();
+                                sleep(500);
+                                linearSlide.moveToLevelToRaiseTheConeFromStack();
 
+                            }
+                             break;
+
+                        case 2:
+                            if(!drive.isBusy() && !rotatingArm.isBusy() && !linearSlide.isBusy())
+                            {
+                                currentState = State.pickupSecondCone;
+                                claw.CloseClaw();
+                                sleep(500);
+                                linearSlide.moveToLevelToRaiseTheConeFromStack();
+                            }
+                            else
+                            {
+                                if(timer.time(TimeUnit.MILLISECONDS) > timeToWaitBeforeBringingRotatingArmDownBetweenCycles)
+                                {
+                                    rotatingArm.setRotatorArmPositionRaw(RotatingArm.ROTATOR_BOTTOM);
+                                    linearSlide.moveToLevel4ConeStack();
+                                }
+                            }
+                            break;
                     }
                     break;
                 case pickupSecondCone:
                     if(!linearSlide.isBusy())
                     {
                         currentState = State.backLittleTowardsSecondPole;
-                        drive.followTrajectoryAsync(backLittleTowardsSecondPole);
+                        switch(counterForAutoCycle) {
+                            case 1:
+                                drive.followTrajectoryAsync(backLittleTowardsSecondPole);
+                                break;
+                            case 2:
+                                drive.followTrajectoryAsync(backLittleTowardsThirdPole);
+                                break;
+                        }
 
                     }
                     break;
@@ -345,8 +387,17 @@ public class AutoPowerPlayWithStackAndRotatorArm extends LinearOpMode {
                     if(!drive.isBusy())
                     {
                         currentState = State.backTowardsSecondPole;
-                        drive.followTrajectoryAsync(backTowardsSecondPole);
-                        linearSlide.moveToMiddlePole();
+                        switch(counterForAutoCycle) {
+                            case 1:
+                                drive.followTrajectoryAsync(backTowardsSecondPole);
+                                linearSlide.moveToMiddlePole();
+                                break;
+                            case 2:
+                                drive.followTrajectoryAsync(backTowardsThirdPole);
+                                linearSlide.moveToMiddlePole();
+                                break;
+
+                        }
                         if(teamColor <0) {
                             rotatingArm.setRotatorArmPositionRaw(rotatingArm.ROTATOR_RIGHT);
                         }
@@ -370,7 +421,19 @@ public class AutoPowerPlayWithStackAndRotatorArm extends LinearOpMode {
                 case placeTheConeInSecondPole:
                     claw.OpenClaw();
                     sleep(500);
-                    currentState = State.goToTheParkingPosition;
+                    switch(counterForAutoCycle) {
+                        case 1:
+                                counterForAutoCycle +=1;
+                                timer.reset();
+                                drive.followTrajectoryAsync(forwardTowardsXConeStackThirdPole);
+                                currentState = State.forwardTowardsXConeStack;
+                                break;
+                        case 2:
+                            currentState = State.goToTheParkingPosition;
+                            break;
+
+                    }
+
                     //turret.turretGoHome(teamColor);
                     break;
                 case goToTheParkingPosition:
@@ -436,6 +499,8 @@ public class AutoPowerPlayWithStackAndRotatorArm extends LinearOpMode {
                         // drive.followTrajectoryAsync(goTowardsSecondPoleFirst);
                     }
                     break;
+
+
 
 //endregion States For Level Middle
             }
