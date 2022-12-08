@@ -42,7 +42,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
  * IMPORTANT: In order to use this OpMode, you need to obtain your own Vuforia license key as
  * is explained below.
  */
-@Autonomous(name = "Right_AutoPowerPlayWithPreLoadOnlyAndRotatorArm", group = "Autonomous")
+@Autonomous(name = "Right_Auto_PreloadOnly", group = "Autonomous")
 //@Disabled
 
 public class Right_AutoPowerPlayWithPreLoadOnlyAndRotatorArm extends AutoPowerPlayWithPreLoadOnlyAndRotatorArm {

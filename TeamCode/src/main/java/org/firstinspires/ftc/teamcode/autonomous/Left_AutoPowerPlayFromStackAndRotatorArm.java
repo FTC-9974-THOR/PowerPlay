@@ -41,7 +41,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
  * IMPORTANT: In order to use this OpMode, you need to obtain your own Vuforia license key as
  * is explained below.
  */
-@Autonomous(name = "Left_AutoPowerPlayFromStackAndRotatorArm", group = "Autonomous")
+@Autonomous(name = "Left_Auto_2_Cone", group = "Autonomous")
 //@Disabled
 
 public class Left_AutoPowerPlayFromStackAndRotatorArm extends AutoPowerPlayWithStackAndRotatorArm {
