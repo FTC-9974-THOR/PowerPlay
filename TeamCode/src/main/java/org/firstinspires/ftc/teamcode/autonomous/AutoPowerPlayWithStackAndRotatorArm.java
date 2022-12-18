@@ -95,7 +95,7 @@ public class AutoPowerPlayWithStackAndRotatorArm extends LinearOpMode {
         // Initialize our lift
         Lift lift = new Lift(hardwareMap);
         LinearSlidePIDWithVelocity linearSlide = new LinearSlidePIDWithVelocity(hardwareMap);
-        Claw claw = new Claw(hardwareMap);
+        Claw claw = new Claw(hardwareMap, linearSlide);
         //Turret turret = new Turret(hardwareMap);
         RotatingArm rotatingArm = new RotatingArm(hardwareMap, linearSlide);
 

@@ -102,7 +102,7 @@ public class AutoPowerPlayWithOneConeFromStack extends LinearOpMode {
         // Initialize our lift
         Lift lift = new Lift(hardwareMap);
         LinearSlidePIDWithVelocity linearSlide = new LinearSlidePIDWithVelocity(hardwareMap);
-        Claw claw = new Claw(hardwareMap);
+        Claw claw = new Claw(hardwareMap, linearSlide);
         Turret turret = new Turret(hardwareMap);
         // Initialize MecanumDrive9974
         MecanumDrive9974 drive = new MecanumDrive9974(hardwareMap);

@@ -30,8 +30,8 @@ public class TeleOpPowerPlay9974 extends LinearOpMode {
         Turret turret;
         RotatingArm rotatorArm;
         waitForStart();
-        claw = new Claw(hardwareMap);
         linearslide = new LinearSlidePIDWithVelocity(hardwareMap);
+        claw = new Claw(hardwareMap,linearslide);
         MecanumDrive9974 drive = new MecanumDrive9974(hardwareMap);
         turret = new Turret(hardwareMap);
         rotatorArm = new RotatingArm(hardwareMap,linearslide);
@@ -44,7 +44,8 @@ public class TeleOpPowerPlay9974 extends LinearOpMode {
       //  int armStartPosition = drive.SlideMotor.getCurrentPosition();
         int startPosition=0;
         int poistionOfArm =0;
-        double maxSpeedDriveTrainPercentage = 0.55;
+        double maxSpeedDriveTrainPercentage = 0.50;
+        double maxSpeedDriveTrainPercentageForTurn = 0.40;
 
        // drive.SlideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         boolean gamepad2_Y_WasPressed = false;
@@ -65,7 +66,7 @@ public class TeleOpPowerPlay9974 extends LinearOpMode {
                         new Pose2d(
                                 -gamepad1.left_stick_y * (maxSpeedDriveTrainPercentage + gamepad1.right_trigger * (1-maxSpeedDriveTrainPercentage)),
                                 -gamepad1.left_stick_x * (maxSpeedDriveTrainPercentage + gamepad1.right_trigger * (1-maxSpeedDriveTrainPercentage)),
-                                -gamepad1.right_stick_x * maxSpeedDriveTrainPercentage
+                                -gamepad1.right_stick_x * maxSpeedDriveTrainPercentageForTurn
                         )
                 );
             }
@@ -74,7 +75,7 @@ public class TeleOpPowerPlay9974 extends LinearOpMode {
                         new Pose2d(
                                 -gamepad1.left_stick_y * maxSpeedDriveTrainPercentage,
                                 -gamepad1.left_stick_x * maxSpeedDriveTrainPercentage,
-                                -gamepad1.right_stick_x * maxSpeedDriveTrainPercentage
+                                -gamepad1.right_stick_x * maxSpeedDriveTrainPercentageForTurn
                         )
                 );
             }
@@ -156,24 +157,23 @@ public class TeleOpPowerPlay9974 extends LinearOpMode {
                 rotatorArm.setRotatorArmPositionRaw(rotatorArm.ROTATOR_BOTTOM);
                 //turret.turretGoHomeWithVoltage();
             }
-            if(gamepad2.dpad_right)
-            {
-                rotatorArm.RotatorArmMode = RotatingArm.RotatorArmStates.Moving;
-                rotatorArm.setRotatorArmPositionRaw(rotatorArm.ROTATOR_RIGHT);
+          if(gamepad2.right_trigger>0) {
+              if (gamepad2.dpad_right) {
+                  rotatorArm.RotatorArmMode = RotatingArm.RotatorArmStates.Moving;
+                  rotatorArm.setRotatorArmPositionRaw(rotatorArm.ROTATOR_RIGHT);
 
-            }
-            if(gamepad2.dpad_left)
-            {
-                rotatorArm.RotatorArmMode = RotatingArm.RotatorArmStates.Moving;
-                rotatorArm.setRotatorArmPositionRaw(rotatorArm.ROTATOR_LEFT);
+              }
+              if (gamepad2.dpad_left) {
+                  rotatorArm.RotatorArmMode = RotatingArm.RotatorArmStates.Moving;
+                  rotatorArm.setRotatorArmPositionRaw(rotatorArm.ROTATOR_LEFT);
 
-            }
-            if(gamepad2.dpad_up)
-            {
-                rotatorArm.RotatorArmMode = RotatingArm.RotatorArmStates.Moving;
-                rotatorArm.setRotatorArmPositionRaw(rotatorArm.ROTATOR_BOTTOM);
+              }
+              if (gamepad2.dpad_up) {
+                  rotatorArm.RotatorArmMode = RotatingArm.RotatorArmStates.Moving;
+                  rotatorArm.setRotatorArmPositionRaw(rotatorArm.ROTATOR_BOTTOM);
 
-            }
+              }
+          }
 
             if(!(gamepad2.left_trigger>0)) {
                 if(Math.abs(gamepad2.left_stick_x)>0.0){

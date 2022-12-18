@@ -14,7 +14,7 @@ public class RotatingArm {
     public static final double outputMin = 0;
     public static final double outputMax = 1;
     public double minimumRawValueForServoMotion = 0;
-    static final double minimumRawValueForServoMotionAuto = MathUtilities.map(566, inputMin, inputMax, outputMin,outputMax);
+    static final double minimumRawValueForServoMotionAuto = MathUtilities.map(860, inputMin, inputMax, outputMin,outputMax);
     public static final double minimumRawValueForServoMotionTeleop = MathUtilities.map(506, inputMin, inputMax, outputMin,outputMax);
 
     private LinearSlidePIDWithVelocity linearSlide;
@@ -27,9 +27,9 @@ public class RotatingArm {
 
 
     public RotatorArmStates RotatorArmMode;
-    public static final double bottomTickValue = 1533;
-    public static final double nintyDegreeTickDisplacementRight = 365;
-    public static final double  nintyDegreeTickDisplacementLeft = 366;
+    public static final double bottomTickValue = 1555;
+    public static final double nintyDegreeTickDisplacementRight = 376;
+    public static final double  nintyDegreeTickDisplacementLeft = 375; //370.53;
     public static final double
             ROTATOR_LEFT = MathUtilities.map(bottomTickValue-nintyDegreeTickDisplacementLeft, inputMin, inputMax, outputMin,outputMax),
             ROTATOR_RIGHT = MathUtilities.map(bottomTickValue+nintyDegreeTickDisplacementRight, inputMin, inputMax, outputMin,outputMax),

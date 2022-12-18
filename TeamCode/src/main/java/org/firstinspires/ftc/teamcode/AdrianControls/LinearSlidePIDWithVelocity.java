@@ -46,14 +46,18 @@ public class LinearSlidePIDWithVelocity {
      */
     //endregion
     //region start Values WITH Rotator Arm
+    private double currentPositionForClaw = 0.0;
+    private double lowerCalculatedHeight = 0.0;
+    private double subtractionForLowerCalcualtedHeight = 0.15;
     private static final double lowPoleHeight = 0.1;
-    private static final double middlePoleHeight = 0.297;
-    private static final double highPoleHeight = 0.506;
+    private static final double middlePoleHeight = 0.308; //0.297 og
+    private static final double highPoleHeight = 0.521; //506 og
     private static final double lowPoleHeightTeleop = 0.326;
-    private static final double middlePoleHeightTeleop = 0.523;
-    private static final double highPoleHeightTeleop = 0.732;
+    private static final double middlePoleHeightTeleop = 0.551;
+    private static final double highPoleHeightTeleop = 0.745;
     private static final double level5ConeStackHeight = 0.140;
     private static final double level4ConeStackHeight = 0.103;
+    private static final double level3ConeStackHeight = 0.063;
     private static final double aboveTheCameraHeight = 0.1;
     private static final double levelToRaiseTheConeFromStack = 0.25;
     //endregion
@@ -112,6 +116,22 @@ public class LinearSlidePIDWithVelocity {
             setTargetPosition(position);
         }
     }
+    public void moveToBelowOriginalLevel()
+    {
+        currentPositionForClaw = this.getPosition();
+        lowerCalculatedHeight = currentPositionForClaw - subtractionForLowerCalcualtedHeight;
+        this.moveTo(lowerCalculatedHeight);
+    }
+    public void moveToOriginalLevel()
+    {
+        this.moveTo(currentPositionForClaw);
+    }
+    public void resetOrignalLevelValues()
+    {
+        currentPositionForClaw = 0.0;
+        lowerCalculatedHeight = 0.0;
+    }
+
     public void moveToLowPole()
     {
         this.moveTo(lowPoleHeight);
@@ -138,6 +158,7 @@ public class LinearSlidePIDWithVelocity {
     }
     public void moveToLevel5ConeStack(){this.moveTo(level5ConeStackHeight);}
     public void moveToLevel4ConeStack(){this.moveTo(level4ConeStackHeight);}
+    public void moveToLevel3ConeStack(){this.moveTo(level3ConeStackHeight);}
     public void moveToLevelToRaiseTheConeFromStack(){this.moveTo(levelToRaiseTheConeFromStack);}
     public void moveToAboveTheCameraHeight(){this.moveTo(aboveTheCameraHeight);}
     public double getPosition() {return metersPerTick * Lift.getCurrentPosition();}

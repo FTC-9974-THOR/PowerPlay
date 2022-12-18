@@ -27,10 +27,10 @@ public class TeleOpClaw extends LinearOpMode {
     Turret turret;
     @Override
     public void runOpMode() throws InterruptedException {
-        claw = new Claw(hardwareMap);
         turret = new Turret(hardwareMap);
        // linearslide = newLinearSLidePID(hardwareMap);
         linearslide = new LinearSlidePIDWithVelocity(hardwareMap);
+        claw = new Claw(hardwareMap,linearslide);
         waitForStart();
         //linearslide.setTargetPosition(0.25);
         //linearslide.moveTo(0.35);
