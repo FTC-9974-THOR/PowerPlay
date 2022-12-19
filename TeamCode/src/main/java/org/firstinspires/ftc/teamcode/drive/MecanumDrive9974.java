@@ -300,12 +300,14 @@ public class MecanumDrive9974 extends MecanumDrive {
         rightRear.setPower(v2);
         rightFront.setPower(v3);
     }
-/*
+
     @Override
     public double getRawExternalHeading() {
-        return imu.getAngularOrientation().firstAngle;
+//        return imu.getAngularOrientation().firstAngle;
+        //deletion of imu means we need to return 0 here will not make sure this does not cause issues.
+        return 0;
     }
-*/
+
     @Override
     public Double getExternalHeadingVelocity() {
         return (double) imu.getAngularVelocity().zRotationRate;
