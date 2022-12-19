@@ -61,7 +61,7 @@ public class RobotHardware {
     // Define Motor and Servo objects  (Make them private so they can't be accessed externally)
     private DcMotor leftDrive   = null;
     private DcMotor rightDrive  = null;
-    private DcMotor SlideMotor = null;
+    private DcMotor armMotor = null;
     private Servo   leftHand = null;
     private Servo   rightHand = null;
 
@@ -86,7 +86,7 @@ public class RobotHardware {
         // Define and Initialize Motors (note: need to use reference to actual OpMode).
         leftDrive  = myOpMode.hardwareMap.get(DcMotor.class, "left_drive");
         rightDrive = myOpMode.hardwareMap.get(DcMotor.class, "right_drive");
-        SlideMotor   = myOpMode.hardwareMap.get(DcMotor.class, "arm");
+        armMotor   = myOpMode.hardwareMap.get(DcMotor.class, "arm");
 
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
         // Pushing the left stick forward MUST make robot go forward. So adjust these two lines based on your first test drive.
@@ -151,7 +151,7 @@ public class RobotHardware {
      * @param power driving power (-1.0 to 1.0)
      */
     public void setArmPower(double power) {
-        SlideMotor.setPower(power);
+        armMotor.setPower(power);
     }
 
     /**
