@@ -308,7 +308,7 @@ public class AutoPowerPlayWithPreLoadOnlyAndRotatorArm extends LinearOpMode {
                     }
                     break;
                 case parkPosition:
-                    if (!drive.isBusy() && !drive.IsArmLifterBusy() && !linearSlide.isLiftAboveCameraHeight()) {
+                    if (!drive.isBusy() && !linearSlide.isLiftAboveCameraHeight()) {
                         currentState = State.IDLE;
                         ////drive.ArmLifterAsyncUpdate(levelArmShouldGoTo);
                        // drive.followTrajectoryAsync(goTowardsSecondPoleFirst);

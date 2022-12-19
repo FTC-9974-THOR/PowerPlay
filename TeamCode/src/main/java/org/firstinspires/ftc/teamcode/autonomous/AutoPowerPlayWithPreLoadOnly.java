@@ -311,7 +311,7 @@ public class AutoPowerPlayWithPreLoadOnly extends LinearOpMode {
                     }
                     break;
                 case parkPosition:
-                    if (!drive.isBusy() && !drive.IsArmLifterBusy()) {
+                    if (!drive.isBusy()) {
                         currentState = State.IDLE;
                         ////drive.ArmLifterAsyncUpdate(levelArmShouldGoTo);
                        // drive.followTrajectoryAsync(goTowardsSecondPoleFirst);

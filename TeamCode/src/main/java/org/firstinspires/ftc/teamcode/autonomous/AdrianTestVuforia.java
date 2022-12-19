@@ -129,8 +129,8 @@ public class AdrianTestVuforia extends AdrianMecanumControls {
         boolean turnOnlyOneAtIntake = false;
         VuforiaStuff2023.sleeveSignal pos = null;
         pos = posData.sleeveSignalDetected;
-      drive.SlideMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        drive.SlideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+      //drive.SlideMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        //drive.SlideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
   /*     //   drive.SlideMotor.setPower(0.176);
          double kSVolts = 1;
         double kCosVolts = 1;

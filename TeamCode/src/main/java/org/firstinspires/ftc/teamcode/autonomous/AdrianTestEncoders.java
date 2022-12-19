@@ -159,8 +159,8 @@ public class AdrianTestEncoders extends AdrianMecanumControls {
 
 
             telemetry.addData("RightEncoderValue", drive.rightEncoderMotor.getCurrentPosition());
-            telemetry.addData("LeftEncoderValue", drive.duckMotor.getCurrentPosition());
-            telemetry.addData("FrontEncoderValue", drive.rotorMotor.getCurrentPosition());
+            telemetry.addData("LeftEncoderValue", drive.leftEncoderMotor.getCurrentPosition());
+            telemetry.addData("FrontEncoderValue", drive.frontEncoderMotor.getCurrentPosition());
 /*
             telemetry.addData("LeftYellowCount", posData.yellowCountLeft);
             telemetry.addData("CenterYellowCount", posData.yellowCountCenter);
