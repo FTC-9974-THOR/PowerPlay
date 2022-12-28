@@ -81,7 +81,7 @@ public class AutoPowerPlayWithFourConesAndRotatorArm extends LinearOpMode {
     private TFObjectDetector tfod;
 
     private double yValueForChannel = 0.0;
-    private double yValueForChannelLeft = -21.5;
+    private double yValueForChannelLeft = -20.3;
     private double yValueForChannelRight = -20.3;
     private double yValueForChannelHighPole = 0.0;
     private double yValueForChannelHighPoleLeft = -21.5;
@@ -89,8 +89,8 @@ public class AutoPowerPlayWithFourConesAndRotatorArm extends LinearOpMode {
     private double xValueForwardTowardsXConeStack = 0.0;
     private double xValueForwardTowardsXConeStackLeftClaw1 = -59.7;
     private double xValueForwardTowardsXConeStackRightClaw1 = -59.7;
-    private double xValueForwardTowardsXConeStackLeftClaw2 = -60;
-    private double xValueForwardTowardsXConeStackRightClaw2 = -60;
+    private double xValueForwardTowardsXConeStackLeftClaw2 = -59.5;
+    private double xValueForwardTowardsXConeStackRightClaw2 = -59.7;
     public AutoPowerPlayWithFourConesAndRotatorArm(int TeamColor, boolean SlideToSide) {
         super();
         teamColor = TeamColor;
@@ -156,53 +156,54 @@ public class AutoPowerPlayWithFourConesAndRotatorArm extends LinearOpMode {
         //region TRAJECTORIES
         Trajectory initialForwardTowardsFirstPole = drive.trajectoryBuilder(startPose)
                 //.lineTo(new Vector2d(-36, -64 ))// this is for the low pole.
-                .lineTo(new Vector2d(-36*teamColor, -41.2 )) // this is for the middle pole.
+                .lineToLinearHeading(new Pose2d(-36*teamColor, -41.4 ,Math.toRadians(90))) // this is for the middle pole.
                 .build();
         Trajectory initialForwardToLowerTheRotator = drive.trajectoryBuilder(initialForwardTowardsFirstPole.end())
-                .lineTo(new Vector2d(-36*teamColor, -39 ))
+                .lineToLinearHeading(new Pose2d(-36*teamColor, -39 ,Math.toRadians(90)))
                 .build();
         Trajectory forwardToOverShootSignalCone = drive.trajectoryBuilder(initialForwardTowardsFirstPole.end())
-                .lineTo(new Vector2d(-36*teamColor, -12 ))
+                .lineToLinearHeading(new Pose2d(-36*teamColor, -12 ,Math.toRadians(90)))
                 .build();
         Trajectory forwardTowardsYConeStack = drive.trajectoryBuilder(forwardToOverShootSignalCone.end())
-                .lineTo(new Vector2d(-36*teamColor, yValueForChannel))
+                .lineToLinearHeading(new Pose2d(-36*teamColor, yValueForChannel,Math.toRadians(90)))
                 .build();
+        double newAngleToUse = Math.toRadians(90)+Math.toRadians(90*teamColor);
         Trajectory forwardTowardsXConeStack = drive.trajectoryBuilder(forwardTowardsYConeStack.end().plus(new Pose2d(0,0,Math.toRadians(90*teamColor))))
-                .lineTo(new Vector2d(xValueForwardTowardsXConeStack*teamColor, yValueForChannel))
+                .lineToLinearHeading(new Pose2d(xValueForwardTowardsXConeStack*teamColor, yValueForChannel,newAngleToUse))
                 .build();
 //region Second Pole
         Trajectory backLittleTowardsSecondPole = drive.trajectoryBuilder(forwardTowardsXConeStack.end())
-                .lineTo(new Vector2d(-58*teamColor, yValueForChannel))
+                .lineToLinearHeading(new Pose2d(-58*teamColor, yValueForChannel,newAngleToUse))
 //                .lineToLinearHeading(new Pose2d(-58, -22.5,Math.toRadians(185) ))
                 .build();
         Trajectory backTowardsSecondPole = drive.trajectoryBuilder(backLittleTowardsSecondPole.end())
-                .lineTo(new Vector2d(-14*teamColor, yValueForChannel))
+                .lineToLinearHeading(new Pose2d(-14*teamColor, -21,newAngleToUse))
 //                .lineToLinearHeading(new Pose2d(-50.25, -22.5,Math.toRadians(185) ))
                 .build();
 //endregion
 //region Third Pole        
         Trajectory forwardTowardsXConeStackThirdPole = drive.trajectoryBuilder(backTowardsSecondPole.end())
-                .lineTo(new Vector2d(xValueForwardTowardsXConeStack*teamColor, yValueForChannel))
+                .lineToLinearHeading(new Pose2d(xValueForwardTowardsXConeStack*teamColor, yValueForChannel,newAngleToUse))
                 .build();
         Trajectory backLittleTowardsThirdPole = drive.trajectoryBuilder(forwardTowardsXConeStackThirdPole.end())
-                .lineTo(new Vector2d(-58*teamColor, yValueForChannel ))
+                .lineToLinearHeading(new Pose2d(-58*teamColor, yValueForChannel ,newAngleToUse))
 //                .lineToLinearHeading(new Pose2d(-58, -22.5,Math.toRadians(185) ))
                 .build();
         Trajectory backTowardsThirdPole = drive.trajectoryBuilder(backLittleTowardsThirdPole.end())
-                .lineTo(new Vector2d(-14*teamColor, yValueForChannel))
+                .lineToLinearHeading(new Pose2d(-14*teamColor, -21,newAngleToUse))
 //                .lineToLinearHeading(new Pose2d(-50.25, -22.5,Math.toRadians(185) ))
                 .build();
 //endregion
 //region Fourth Pole        
         Trajectory forwardTowardsXConeStackFourthPole = drive.trajectoryBuilder(backTowardsThirdPole.end())
-                .lineTo(new Vector2d(xValueForwardTowardsXConeStack*teamColor, yValueForChannel))
+                .lineToLinearHeading(new Pose2d(xValueForwardTowardsXConeStack*teamColor, yValueForChannel,newAngleToUse))
                 .build();
         Trajectory backLittleTowardsFourthPole = drive.trajectoryBuilder(forwardTowardsXConeStackFourthPole.end())
-                .lineTo(new Vector2d(-58*teamColor, yValueForChannel ))
+                .lineToLinearHeading(new Pose2d(-58*teamColor, yValueForChannel ,newAngleToUse))
 //                .lineToLinearHeading(new Pose2d(-58, -22.5,Math.toRadians(185) ))
                 .build();
         Trajectory backTowardsFourthPole = drive.trajectoryBuilder(backLittleTowardsFourthPole.end())
-                .lineTo(new Vector2d(-14*teamColor, yValueForChannelHighPole)
+                .lineToLinearHeading(new Pose2d(-14*teamColor, yValueForChannelHighPole,newAngleToUse)
 //                        ,drive.getVelocityConstraint(30.0, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
 //                        drive.getAccelerationConstraint(30.0)
                 )
@@ -211,18 +212,18 @@ public class AutoPowerPlayWithFourConesAndRotatorArm extends LinearOpMode {
 //endregion
         
         Trajectory parkPositionOneDot = drive.trajectoryBuilder(backTowardsFourthPole.end())
-                .lineTo(new Vector2d(-54*teamColor, yValueForChannel )
-                        ,drive.getVelocityConstraint(41.0, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        drive.getAccelerationConstraint(40.0)
+                .lineToLinearHeading(new Pose2d(-54*teamColor, yValueForChannel ,newAngleToUse)
+                        ,drive.getVelocityConstraint(50.0, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        drive.getAccelerationConstraint(50.0)
                 )
 //                .lineToLinearHeading(new Pose2d(-58, -22,Math.toRadians(185) ))
                 .build();
         Trajectory parkPositionTwoDot = drive.trajectoryBuilder(backTowardsFourthPole.end())
                 //.splineToConst
                 // antHeading(new Vector2d( -65,-72), Math.toRadians(90))
-                .lineTo(new Vector2d(-35*teamColor, yValueForChannel )
-                        ,drive.getVelocityConstraint(41.0, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        drive.getAccelerationConstraint(40.0)
+                .lineToLinearHeading(new Pose2d(-35*teamColor, yValueForChannel ,newAngleToUse)
+                        ,drive.getVelocityConstraint(51.0, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        drive.getAccelerationConstraint(50.0)
                 )
 //                .lineToLinearHeading(new Pose2d(-38, -22,Math.toRadians(185) ))
                 //.strafeTo(new Vector2d(-38, -22 ))
@@ -230,9 +231,9 @@ public class AutoPowerPlayWithFourConesAndRotatorArm extends LinearOpMode {
         Trajectory parkPositionThreeDot = drive.trajectoryBuilder(backTowardsFourthPole.end())
                 //.splineToConst
                 // antHeading(new Vector2d( -65,-72), Math.toRadians(90))
-                .lineTo(new Vector2d(-11*teamColor, yValueForChannel)
-                        ,drive.getVelocityConstraint(41.0, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        drive.getAccelerationConstraint(40.0)
+                .lineToLinearHeading(new Pose2d(-11*teamColor, yValueForChannel,newAngleToUse)
+                        ,drive.getVelocityConstraint(51.0, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        drive.getAccelerationConstraint(50.0)
                 )
 //                .lineToLinearHeading(new Pose2d(-13, -22,Math.toRadians(185) ))
                 //.strafeTo(new Vector2d(-11, -22 ))

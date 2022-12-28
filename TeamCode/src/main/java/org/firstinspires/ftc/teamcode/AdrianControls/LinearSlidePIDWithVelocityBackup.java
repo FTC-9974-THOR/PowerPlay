@@ -6,46 +6,32 @@ import com.acmerobotics.roadrunner.profile.MotionProfile;
 import com.acmerobotics.roadrunner.profile.MotionProfileGenerator;
 import com.acmerobotics.roadrunner.profile.MotionSegment;
 import com.acmerobotics.roadrunner.profile.MotionState;
-import com.acmerobotics.roadrunner.profile.VelocityConstraint;															  
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;													 
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.RobotLog;										
 
 import org.ftc9974.thorcore.control.VoltageRegulator;
 import org.ftc9974.thorcore.meta.Realizer;
 import org.ftc9974.thorcore.meta.annotation.Hardware;
 
-import org.ftc9974.thorcore.util.MotorUtilities;
-
 import java.util.Collections;
 
-import static java.util.Collections.singletonList;
-
-public class LinearSlidePIDWithVelocity {
+public class LinearSlidePIDWithVelocityBackup {
 
     @Hardware(name = "SlideMotor")
     public DcMotorEx Lift;
     @Hardware(name = "LiftMagneticSwitch")
     public DigitalChannel liftMagneticSwitch;
 
-    private static final double MAX_MOTOR_SPEED = 32.67; // rad/s
-
     private static final double diameterOfSpool = 0.03225; // in meters- diameter.
-	private static final double PULLEY_RADIUS = diameterOfSpool / 2.0; // meters
     private static final double metersPerTick = (Math.PI * diameterOfSpool) / (7 * 4 * 19.2);
     private static final double minHeight = 0; // meters
     private static final double maxHeight = 0.79; // also meters
-    //private static final double MAX_VEL = 3.5;
-	private static final double MAX_VEL = MAX_MOTOR_SPEED * PULLEY_RADIUS; // m/s
-    //private static final double MAX_ACCEL = 2.0;//0.5
-	private static final double MAX_ACCEL = 0.5 * 9.8066; // m/s^2
-    //private static final double MAX_JERK = 1.0;//0.25
-    private static final double MAX_JERK = 10; // m/s^3
-	
+    private static final double MAX_VEL = 3.5;
+    private static final double MAX_ACCEL = 2.0;//0.5
+    private static final double MAX_JERK = 1.0;//0.25
     //region start Values NO Rotator Arm
     /*
     private static final double lowPoleHeight = 0.326;
@@ -81,22 +67,16 @@ public class LinearSlidePIDWithVelocity {
     }
     public LinearSlideStates LinearSlideMode;
     public static final MotorConstants MOTOR_CONSTANTS = calculateMotorConstants(32.67256356,2.43,0,12);
-    private static final double MOTOR_ANGULAR_MOMENT_OF_INERTIA = 0; // kg m^2
-//    public static final double LIFT_MASS = 0.5;
-    private static final double ARM_MASS = 0.9; // kg
-    private static final double STAGE_MASS = 0.8; // kg
-    private static final double INTER_MASS = 0.2; // kg
-    private static final double LIFT_MASS = ARM_MASS + 2 * STAGE_MASS + 2 * INTER_MASS; // kg
-	
+    public static final double MOTOR_ANGULAR_MOMENT_OF_INERTIA = 0;
+    public static final double LIFT_MASS = 0.5;
     private final VoltageRegulator regulator;
     private MotionProfile profile;
     private final ElapsedTime profileTimer;
     private PIDFController controller;
     public boolean isMotionProfillingBeingUsed = true;
     private boolean suppressMotionProfiling = true;
-    public LinearSlidePIDWithVelocity(HardwareMap hardwareMap) {
+    public LinearSlidePIDWithVelocityBackup(HardwareMap hardwareMap) {
         Realizer.realize(this, hardwareMap);
-		/*
         controller = new PIDFController(new PIDCoefficients(10.0, 0, 0),//1.0,0.0,0.08
                 MOTOR_CONSTANTS.kB / (diameterOfSpool/2),
                 (MOTOR_ANGULAR_MOMENT_OF_INERTIA + LIFT_MASS*Math.pow((diameterOfSpool/2),2)) / (diameterOfSpool/2),
@@ -104,29 +84,6 @@ public class LinearSlidePIDWithVelocity {
                 (x,dx) -> LIFT_MASS * 9.8066  * (diameterOfSpool/2)
 
                 );
-				*/
-        controller = new PIDFController(
-                new PIDCoefficients(5, 0, 3),
-                MOTOR_CONSTANTS.kB / PULLEY_RADIUS,
-                (MOTOR_ANGULAR_MOMENT_OF_INERTIA + LIFT_MASS * Math.pow(PULLEY_RADIUS, 2)) / PULLEY_RADIUS,
-                MOTOR_CONSTANTS.kStatic,
-                (x, dx) -> {
-                    double mass = ARM_MASS;
-                    if (x > 0.39 + 0.1) {
-                        mass += STAGE_MASS;
-                    }
-                    if (x > 0.59 + 0.1) {
-                        mass += INTER_MASS;
-                    }
-                    if (x > 0.77 + 0.1) {
-                        mass += STAGE_MASS;
-                    }
-                    if (x > 0.98 + 0.1) {
-                        mass += INTER_MASS;
-                    }
-                    return mass * 9.8066 * PULLEY_RADIUS;
-                }
-        );				
         Lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         Lift.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         Lift.setDirection(DcMotorEx.Direction.REVERSE);
@@ -139,9 +96,7 @@ public class LinearSlidePIDWithVelocity {
         return LinearSlideMode != LinearSlideStates.Idle;
     }
     private void moveTo(double position){
-		if(suppressMotionProfiling){
-			isMotionProfillingBeingUsed = !suppressMotionProfiling;
-		}
+        isMotionProfillingBeingUsed = !suppressMotionProfiling;
         LinearSlideMode = LinearSlideStates.Moving;
 
         if(isMotionProfillingBeingUsed) {
