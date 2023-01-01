@@ -149,23 +149,38 @@ public class AdrianTestBadMotor extends AdrianMecanumControls {
 
 
         // run until the end of the match (driver presses STOP)
+        ElapsedTime timerForPid = new ElapsedTime();
+        timerForPid.reset();
         while (opModeIsActive()) {
+                if(timerForPid.seconds() >= 0)
+                    drive.rightFront.setPower(0.25);
+                if(timerForPid.seconds() >=10)
+                    drive.leftFront.setPower(0.25);
+            if(timerForPid.seconds() >=15)
 
-            for(double i=0.1; i<1; i+=0.1) {
-                drive.rightFront.setPower(i);
-                drive.leftFront.setPower(i);
-                sleep(5000);
-                drive.rightFront.setPower(0);
-                drive.leftFront.setPower(0);
-            }
-            drive.leftFront.setPower(0);
-            drive.rightFront.setPower(0);
+                drive.rightRear.setPower(0.25);
+            if(timerForPid.seconds() >=20)
+
+                drive.leftRear.setPower(0.25);
+
+            //drive.leftFront.setPower(0);
+            //drive.rightFront.setPower(0);
+            //drive.rightRear.setPower(0);
+            //drive.leftRear.setPower(0);
 
 
             telemetry.addData("RightEncoderValue", drive.rightEncoderMotor.getCurrentPosition());
             telemetry.addData("LeftEncoderValue", drive.leftEncoderMotor.getCurrentPosition());
             telemetry.addData("FrontEncoderValue", drive.frontEncoderMotor.getCurrentPosition());
-/*
+            telemetry.addData("LeftFrontMotorEncoder", drive.leftFront.getCurrentPosition());
+            telemetry.addData("LeftRearMotorEncoder", drive.leftRear.getCurrentPosition());
+
+            telemetry.addData("RightFrontMotorEncoder", drive.rightFront.getCurrentPosition());
+
+            telemetry.addData("RightRearMotorEncoder", drive.rightRear.getCurrentPosition());
+
+
+            /*
             telemetry.addData("LeftYellowCount", posData.yellowCountLeft);
             telemetry.addData("CenterYellowCount", posData.yellowCountCenter);
             telemetry.addData("RightYellowCount", posData.yellowCountRight);

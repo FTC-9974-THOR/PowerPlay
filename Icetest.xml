@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
+<Robot type="FirstInspires-FTC">
+    <LynxUsbDevice name="Control Hub Portal" serialNumber="(embedded)" parentModuleAddress="173">
+        <LynxModule name="Expansion Hub 3" port="3">
+            <goBILDA5202SeriesMotor name="leftEncoder" port="0" />
+            <goBILDA5202SeriesMotor name="rightEncoder" port="1" />
+            <goBILDA5202SeriesMotor name="frontEncoder" port="2" />
+            <goBILDA5202SeriesMotor name="SlideMotor" port="3" />
+            <Servo name="ClawServo" port="0" />
+            <Servo name="RotatingArmServo" port="1" />
+            <DigitalDevice name="MagneticLimit" port="0" />
+            <DigitalDevice name="MagneticLimit" port="1" />
+            <DigitalDevice name="LiftMagneticSwitch" port="2" />
+            <DigitalDevice name="LiftMagneticSwitch" port="3" />
+            <DigitalDevice name="" port="4" />
+            <DigitalDevice name="touchSensor" port="5" />
+            <DigitalDevice name="red1" port="6" />
+        </LynxModule>
+        <LynxModule name="Control Hub" port="173">
+            <goBILDA5202SeriesMotor name="rightFront" port="0" />
+            <goBILDA5202SeriesMotor name="rightRear" port="1" />
+            <goBILDA5202SeriesMotor name="leftRear" port="2" />
+            <goBILDA5202SeriesMotor name="leftFront" port="3" />
+            <ContinuousRotationServo name="rightWheelServo" port="0" />
+            <ContinuousRotationServo name="leftWheelServo" port="1" />
+            <ContinuousRotationServo name="greenWheelServo" port="2" />
+            <Servo name="turretServo" port="3" />
+            <Servo name="angleServo" port="4" />
+            <AnalogInput name="" port="0" />
+            <AnalogInput name="" port="1" />
+            <AnalogInput name="" port="2" />
+            <AnalogInput name="TurretPotentiometer" port="3" />
+            <LynxEmbeddedIMU name="imu" port="0" bus="0" />
+        </LynxModule>
+    </LynxUsbDevice>
+    <Webcam name="Webcam 1" serialNumber="550E6A40" />
+</Robot>
