@@ -94,7 +94,7 @@ public class AdrianTestVuforiaTester extends AdrianMecanumControls {
         waitForStart();
         runtime.reset();
 
-
+/*
         drive.SlideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         drive.SlideMotor.setTargetPosition(drive.SlideMotor.getCurrentPosition() - 400);
        /*
@@ -106,6 +106,7 @@ public class AdrianTestVuforiaTester extends AdrianMecanumControls {
         }
 */
         ElapsedTime timerForPid = new ElapsedTime();
+        /*
         drive.SlideMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         int initialPosition = drive.SlideMotor.getCurrentPosition();
         drive.SlideMotor.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -115,6 +116,7 @@ public class AdrianTestVuforiaTester extends AdrianMecanumControls {
             double powerToApply = Math.abs(drive.SlideMotor.getCurrentPosition() - 400) * 1.0/Math.abs(initialPosition-400);
             drive.SlideMotor.setPower(powerToApply);
         }
+        */
         //drive.SlideMotor.setPower(0);
          sleep(500);
         //drive.elbowServo.setPosition(0.0);

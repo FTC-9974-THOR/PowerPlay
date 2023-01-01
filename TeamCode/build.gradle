@@ -17,6 +17,12 @@ apply from: '../build.dependencies.gradle'
 
 android {
     namespace = 'org.firstinspires.ftc.teamcode'
+	packagingOptions {
+        jniLibs.useLegacyPackaging true
+    }
+    defaultConfig.minSdkVersion 25
+    compileOptions.sourceCompatibility JavaVersion.VERSION_1_8
+    compileOptions.targetCompatibility JavaVersion.VERSION_1_8
 }
 
 dependencies {
@@ -24,6 +30,7 @@ dependencies {
     annotationProcessor files('lib/OpModeAnnotationProcessor.jar')
     implementation 'org.apache.commons:commons-math3:3.6.1'
     implementation 'com.acmerobotics.roadrunner:core:0.5.5'
-    implementation name: "thorcore", version: "0.4+", ext: "aar"
+    implementation name: "ThorCore", version: "0.5+", ext: "aar"
+    //implementation project(':ThorCore')
 
 }

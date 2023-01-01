@@ -15,11 +15,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.ftc9974.thorcore.control.VoltageRegulator;
 import org.ftc9974.thorcore.meta.Realizer;
 import org.ftc9974.thorcore.meta.annotation.Hardware;
-import org.ftc9974.thorcore.util.MotorUtilities;
 
 import java.util.Collections;
-
-import static java.util.Collections.singletonList;
 
 public class LinearSlidePIDWithVelocity {
 
@@ -55,8 +52,8 @@ public class LinearSlidePIDWithVelocity {
     private static final double lowPoleHeightTeleop = 0.326;
     private static final double middlePoleHeightTeleop = 0.551;
     private static final double highPoleHeightTeleop = 0.745;
-    private static final double level5ConeStackHeight = 0.140;
-    private static final double level4ConeStackHeight = 0.103;
+    private static final double level5ConeStackHeight = 0.120;
+    private static final double level4ConeStackHeight = 0.093;
     private static final double level3ConeStackHeight = 0.063;
     private static final double aboveTheCameraHeight = 0.1;
     private static final double levelToRaiseTheConeFromStack = 0.25;
@@ -86,7 +83,7 @@ public class LinearSlidePIDWithVelocity {
                 MOTOR_CONSTANTS.kStatic,
                 (x,dx) -> LIFT_MASS * 9.8066  * (diameterOfSpool/2)
 
-                );
+        );
         Lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         Lift.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         Lift.setDirection(DcMotorEx.Direction.REVERSE);
