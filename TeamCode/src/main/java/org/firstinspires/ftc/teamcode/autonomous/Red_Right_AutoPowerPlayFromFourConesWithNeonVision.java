@@ -41,13 +41,13 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
  * IMPORTANT: In order to use this OpMode, you need to obtain your own Vuforia license key as
  * is explained below.
  */
-@Autonomous(name = "Left_Auto_4_Cone_NV", group = "Autonomous")
+@Autonomous(name = "Red_Right_Auto_4_Cone_NV", group = "Autonomous")
 //@Disabled
 
-public class Left_AutoPowerPlayFromFourConesWithNeonVision extends AutoPowerPlayWithFourConesWithNeonVision {
+public class Red_Right_AutoPowerPlayFromFourConesWithNeonVision extends AutoPowerPlayWithFourConesWithNeonVision {
 
-    public Left_AutoPowerPlayFromFourConesWithNeonVision()
+    public Red_Right_AutoPowerPlayFromFourConesWithNeonVision()
     {
-        super(1, false);
+        super(-1, -1);
     }
 }

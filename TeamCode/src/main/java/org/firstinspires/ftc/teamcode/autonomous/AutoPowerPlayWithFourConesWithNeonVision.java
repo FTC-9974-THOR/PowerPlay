@@ -19,7 +19,10 @@ import org.firstinspires.ftc.teamcode.AdrianControls.VuforiaStuff2023;
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.MecanumDrive9974;
 import org.firstinspires.ftc.teamcode.drive.advanced.PoseStorage;
+import org.ftc9974.thorcore.seasonal.powerplay.PowerPlaySeeker;
+import org.ftc9974.thorcore.vision.Seeker;
 
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -54,6 +57,7 @@ public class AutoPowerPlayWithFourConesWithNeonVision extends LinearOpMode {
         placeTheConeInFirstPole,
         forwardOverShootForSignal,
         forwardTowardsYConeStack,
+        lookForTheLine,
         forwardTowardsXConeStack,
         pickupSecondCone,
         backLittleTowardsSecondPole,
@@ -64,8 +68,9 @@ public class AutoPowerPlayWithFourConesWithNeonVision extends LinearOpMode {
         lowerTheRotatorAndSlide,
         parkPosition
     }
-    private int teamColor;//1=Left -1= Right
-    private boolean slideToSide = false;
+    private int sideWeAreOn;//1=Left -1= Right
+    private int teamColor; // blue == 1 red == -1
+    //private boolean slideToSide = false;
     private int counterForAutoCycle = 1;
 
     private ElapsedTime runtime = new ElapsedTime();
@@ -78,6 +83,7 @@ public class AutoPowerPlayWithFourConesWithNeonVision extends LinearOpMode {
     private VuforiaLocalizer vuforia;
     public VuforiaStuff2023 vuforiaStuff;
     private TFObjectDetector tfod;
+    private PowerPlaySeeker ppseeker;
 
     private double yValueForChannel = 0.0;
     private double yValueForChannelLeft = -20.3;
@@ -93,10 +99,10 @@ public class AutoPowerPlayWithFourConesWithNeonVision extends LinearOpMode {
     private double xValueForChannel = 0.0;
     private double xValueForChannelLeft = -14.0;
     private double xValueForChannelRight = -15.5;
-    public AutoPowerPlayWithFourConesWithNeonVision(int TeamColor, boolean SlideToSide) {
+    public AutoPowerPlayWithFourConesWithNeonVision(int SideWeAreOn, int TeamColor) {
         super();
-        teamColor = TeamColor;
-        slideToSide = SlideToSide;
+        this.sideWeAreOn = SideWeAreOn;
+        this.teamColor = TeamColor;
 
     }
 
@@ -113,7 +119,14 @@ public class AutoPowerPlayWithFourConesWithNeonVision extends LinearOpMode {
         Claw claw = new Claw(hardwareMap, linearSlide);
         //Turret turret = new Turret(hardwareMap);
         RotatingArm rotatingArm = new RotatingArm(hardwareMap, linearSlide);
+        try {
+            ppseeker = new PowerPlaySeeker("Webcam 2", hardwareMap);
+            ppseeker.startStreaming();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
+        Seeker.Signature signatureToRun;
         // Initialize MecanumDrive9974
         MecanumDrive9974 drive = new MecanumDrive9974(hardwareMap);
         // Define our start pose
@@ -126,8 +139,22 @@ public class AutoPowerPlayWithFourConesWithNeonVision extends LinearOpMode {
         // MagneticSwitch turret = new MagneticSwitch(hardwareMap);
         vuforia = ClassFactory.getInstance().createVuforia(parameters);
         vuforiaStuff = new VuforiaStuff2023(vuforia);
-        Pose2d startPose = new Pose2d(-36*teamColor, -72 , Math.toRadians(90));
-        if(teamColor ==1)
+        Pose2d startPose = new Pose2d(-36* sideWeAreOn, -72 , Math.toRadians(90));
+        ppseeker.pole.setActive(false);
+        if(teamColor == 1) // this is blue
+        {
+            signatureToRun = ppseeker.blueConeAndLine;
+            ppseeker.redConeAndLine.setActive(false);
+        }
+        else // this is for red
+        {
+            signatureToRun = ppseeker.redConeAndLine;
+            ppseeker.blueConeAndLine.setActive(false);
+        }
+
+
+
+        if(sideWeAreOn ==1)
         {
             yValueForChannel = yValueForChannelLeft;
             yValueForChannelHighPole = yValueForChannelHighPoleLeft;
@@ -160,54 +187,54 @@ public class AutoPowerPlayWithFourConesWithNeonVision extends LinearOpMode {
         //region TRAJECTORIES
         Trajectory initialForwardTowardsFirstPole = drive.trajectoryBuilder(startPose)
                 //.lineTo(new Vector2d(-36, -64 ))// this is for the low pole.
-                .lineToLinearHeading(new Pose2d(-36*teamColor, -41.4 ,Math.toRadians(90))) // this is for the middle pole.
+                .lineToLinearHeading(new Pose2d(-36* sideWeAreOn, -41.4 ,Math.toRadians(90))) // this is for the middle pole.
                 .build();
         Trajectory initialForwardToLowerTheRotator = drive.trajectoryBuilder(initialForwardTowardsFirstPole.end())
-                .lineToLinearHeading(new Pose2d(-36*teamColor, -39 ,Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(-36* sideWeAreOn, -39 ,Math.toRadians(90)))
                 .build();
         Trajectory forwardToOverShootSignalCone = drive.trajectoryBuilder(initialForwardTowardsFirstPole.end())
-                .lineToLinearHeading(new Pose2d(-36*teamColor, -12 ,Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(-36* sideWeAreOn, -12 ,Math.toRadians(90)))
                 .build();
         Trajectory forwardTowardsYConeStack = drive.trajectoryBuilder(forwardToOverShootSignalCone.end())
-                .lineToLinearHeading(new Pose2d(-36*teamColor, yValueForChannel,Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(-36* sideWeAreOn, yValueForChannel,Math.toRadians(90))) // used to use yValueForChannel for channel.
                 .build();
-        double newAngleToUse = Math.toRadians(90)+Math.toRadians(90*teamColor);
-        Trajectory forwardTowardsXConeStack = drive.trajectoryBuilder(forwardTowardsYConeStack.end().plus(new Pose2d(0,0,Math.toRadians(90*teamColor))))
-                .lineToLinearHeading(new Pose2d(xValueForwardTowardsXConeStack*teamColor, yValueForChannel,newAngleToUse))
+        double newAngleToUse = Math.toRadians(90)+Math.toRadians(90* sideWeAreOn);
+        Trajectory forwardTowardsXConeStack = drive.trajectoryBuilder(forwardTowardsYConeStack.end().plus(new Pose2d(0,0,Math.toRadians(90* sideWeAreOn))))
+                .lineToLinearHeading(new Pose2d(xValueForwardTowardsXConeStack* sideWeAreOn, yValueForChannel,newAngleToUse))
                 .build();
 //region Second Pole
         Trajectory backLittleTowardsSecondPole = drive.trajectoryBuilder(forwardTowardsXConeStack.end())
-                .lineToLinearHeading(new Pose2d(-58*teamColor, yValueForChannel,newAngleToUse))
+                .lineToLinearHeading(new Pose2d(-58* sideWeAreOn, yValueForChannel,newAngleToUse))
 //                .lineToLinearHeading(new Pose2d(-58, -22.5,Math.toRadians(185) ))
                 .build();
         Trajectory backTowardsSecondPole = drive.trajectoryBuilder(backLittleTowardsSecondPole.end())
-                .lineToLinearHeading(new Pose2d(xValueForChannel*teamColor, -21,newAngleToUse))
+                .lineToLinearHeading(new Pose2d(xValueForChannel* sideWeAreOn, -21,newAngleToUse))
 //                .lineToLinearHeading(new Pose2d(-50.25, -22.5,Math.toRadians(185) ))
                 .build();
 //endregion
 //region Third Pole        
         Trajectory forwardTowardsXConeStackThirdPole = drive.trajectoryBuilder(backTowardsSecondPole.end())
-                .lineToLinearHeading(new Pose2d(xValueForwardTowardsXConeStack*teamColor, yValueForChannel,newAngleToUse))
+                .lineToLinearHeading(new Pose2d(xValueForwardTowardsXConeStack* sideWeAreOn, yValueForChannel,newAngleToUse))
                 .build();
         Trajectory backLittleTowardsThirdPole = drive.trajectoryBuilder(forwardTowardsXConeStackThirdPole.end())
-                .lineToLinearHeading(new Pose2d(-58*teamColor, yValueForChannel ,newAngleToUse))
+                .lineToLinearHeading(new Pose2d(-58* sideWeAreOn, yValueForChannel ,newAngleToUse))
 //                .lineToLinearHeading(new Pose2d(-58, -22.5,Math.toRadians(185) ))
                 .build();
         Trajectory backTowardsThirdPole = drive.trajectoryBuilder(backLittleTowardsThirdPole.end())
-                .lineToLinearHeading(new Pose2d(xValueForChannel*teamColor, -21,newAngleToUse))
+                .lineToLinearHeading(new Pose2d(xValueForChannel* sideWeAreOn, -21,newAngleToUse))
 //                .lineToLinearHeading(new Pose2d(-50.25, -22.5,Math.toRadians(185) ))
                 .build();
 //endregion
 //region Fourth Pole        
         Trajectory forwardTowardsXConeStackFourthPole = drive.trajectoryBuilder(backTowardsThirdPole.end())
-                .lineToLinearHeading(new Pose2d(xValueForwardTowardsXConeStack*teamColor, yValueForChannel,newAngleToUse))
+                .lineToLinearHeading(new Pose2d(xValueForwardTowardsXConeStack* sideWeAreOn, yValueForChannel,newAngleToUse))
                 .build();
         Trajectory backLittleTowardsFourthPole = drive.trajectoryBuilder(forwardTowardsXConeStackFourthPole.end())
-                .lineToLinearHeading(new Pose2d(-58*teamColor, yValueForChannel ,newAngleToUse))
+                .lineToLinearHeading(new Pose2d(-58* sideWeAreOn, yValueForChannel ,newAngleToUse))
 //                .lineToLinearHeading(new Pose2d(-58, -22.5,Math.toRadians(185) ))
                 .build();
         Trajectory backTowardsFourthPole = drive.trajectoryBuilder(backLittleTowardsFourthPole.end())
-                .lineToLinearHeading(new Pose2d(xValueForChannel*teamColor, yValueForChannelHighPole,newAngleToUse)
+                .lineToLinearHeading(new Pose2d(xValueForChannel* sideWeAreOn, yValueForChannelHighPole,newAngleToUse)
 //                        ,drive.getVelocityConstraint(30.0, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
 //                        drive.getAccelerationConstraint(30.0)
                 )
@@ -216,7 +243,7 @@ public class AutoPowerPlayWithFourConesWithNeonVision extends LinearOpMode {
 //endregion
         
         Trajectory parkPositionOneDot = drive.trajectoryBuilder(backTowardsFourthPole.end())
-                .lineToLinearHeading(new Pose2d(-53*teamColor, yValueForChannel ,newAngleToUse)
+                .lineToLinearHeading(new Pose2d(-53* sideWeAreOn, yValueForChannel ,newAngleToUse)
                         ,drive.getVelocityConstraint(50.0, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         drive.getAccelerationConstraint(50.0)
                 )
@@ -225,7 +252,7 @@ public class AutoPowerPlayWithFourConesWithNeonVision extends LinearOpMode {
         Trajectory parkPositionTwoDot = drive.trajectoryBuilder(backTowardsFourthPole.end())
                 //.splineToConst
                 // antHeading(new Vector2d( -65,-72), Math.toRadians(90))
-                .lineToLinearHeading(new Pose2d(-35*teamColor, yValueForChannel ,newAngleToUse)
+                .lineToLinearHeading(new Pose2d(-35* sideWeAreOn, yValueForChannel ,newAngleToUse)
                         ,drive.getVelocityConstraint(51.0, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         drive.getAccelerationConstraint(50.0)
                 )
@@ -235,7 +262,7 @@ public class AutoPowerPlayWithFourConesWithNeonVision extends LinearOpMode {
         Trajectory parkPositionThreeDot = drive.trajectoryBuilder(backTowardsFourthPole.end())
                 //.splineToConst
                 // antHeading(new Vector2d( -65,-72), Math.toRadians(90))
-                .lineToLinearHeading(new Pose2d(-11*teamColor, yValueForChannel,newAngleToUse)
+                .lineToLinearHeading(new Pose2d(-11* sideWeAreOn, yValueForChannel,newAngleToUse)
                         ,drive.getVelocityConstraint(51.0, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         drive.getAccelerationConstraint(50.0)
                 )
@@ -272,7 +299,7 @@ public class AutoPowerPlayWithFourConesWithNeonVision extends LinearOpMode {
 
         waitForStart();
         //drive.ArmLifter(0,4);
-        posData = vuforiaStuff.vuforiascan(true, true,false,teamColor);
+        posData = vuforiaStuff.vuforiascan(true, true,false, sideWeAreOn);
         double distanceToDropOffSkystone = 0;
         double distanceBackToCenterLine = 0;
         double distanceBackToSecondStone = 0;
@@ -307,7 +334,7 @@ public class AutoPowerPlayWithFourConesWithNeonVision extends LinearOpMode {
         sleep(300);
         //linearSlide.moveToLowPole();
         linearSlide.moveToMiddlePole();
-        if(teamColor <0) {
+        if(sideWeAreOn <0) {
             rotatingArm.setRotatorArmPositionRaw(rotatingArm.ROTATOR_LEFT);
         }
         else
@@ -410,9 +437,20 @@ public class AutoPowerPlayWithFourConesWithNeonVision extends LinearOpMode {
                 case forwardTowardsYConeStack:
                     if(!linearSlide.isBusy() )
                     {
-                        currentState = State.forwardTowardsXConeStack;
-                        drive.turn(Math.toRadians(90*teamColor));
-                        drive.followTrajectoryAsync(forwardTowardsXConeStack);
+                        currentState = State.lookForTheLine;
+                        drive.turn(Math.toRadians(90* sideWeAreOn));
+                        //drive.followTrajectoryAsync(forwardTowardsXConeStack);
+                    }
+                    break;
+
+                case lookForTheLine:
+                    if(!drive.isBusy())
+                    {
+
+                        if(drive.strafeToLineUp(signatureToRun))
+                        {
+
+                        }
                     }
                     break;
                 case forwardTowardsXConeStack:
@@ -489,7 +527,7 @@ public class AutoPowerPlayWithFourConesWithNeonVision extends LinearOpMode {
                             case 1:
                                 drive.followTrajectoryAsync(backTowardsSecondPole);
                                 linearSlide.moveToMiddlePole();
-                                if(teamColor <0) {
+                                if(sideWeAreOn <0) {
                                     rotatingArm.setRotatorArmPositionRaw(rotatingArm.ROTATOR_RIGHT);
                                 }
                                 else
@@ -500,7 +538,7 @@ public class AutoPowerPlayWithFourConesWithNeonVision extends LinearOpMode {
                             case 2:
                                 drive.followTrajectoryAsync(backTowardsThirdPole);
                                 linearSlide.moveToMiddlePole();
-                                if(teamColor <0) {
+                                if(sideWeAreOn <0) {
                                     rotatingArm.setRotatorArmPositionRaw(rotatingArm.ROTATOR_RIGHT);
                                 }
                                 else
@@ -511,7 +549,7 @@ public class AutoPowerPlayWithFourConesWithNeonVision extends LinearOpMode {
                             case 3:
                                 drive.followTrajectoryAsync(backTowardsFourthPole);
                                 linearSlide.moveToHighPole();
-                                if(teamColor <0) {
+                                if(sideWeAreOn <0) {
                                     rotatingArm.setRotatorArmPositionRaw(rotatingArm.ROTATOR_LEFT);
                                 }
                                 else
@@ -567,7 +605,7 @@ public class AutoPowerPlayWithFourConesWithNeonVision extends LinearOpMode {
                     currentState = State.lowerTheRotatorAndSlide;
 
                     if (pos == VuforiaStuff2023.sleeveSignal.ONEDOT) {
-                        if(teamColor == 1) {
+                        if(sideWeAreOn == 1) {
                             drive.followTrajectoryAsync(parkPositionOneDot);
                             timeToWaitBeforeBringingRotatingArmDownInMilliSeconds = timeToWaitBeforeBringingRotatingArmDownBetweenCyclesForEnd;
                         }
@@ -591,7 +629,7 @@ public class AutoPowerPlayWithFourConesWithNeonVision extends LinearOpMode {
                         //    //drive.ArmLifterAsyncUpdate(levelArmShouldGoTo);
                     }
                     if (pos == VuforiaStuff2023.sleeveSignal.THREEDOTS) {
-                        if(teamColor == 1) {
+                        if(sideWeAreOn == 1) {
                             drive.followTrajectoryAsync(parkPositionThreeDot);
                             timeToWaitBeforeBringingRotatingArmDownInMilliSeconds = timeToWaitBeforeBringingRotatingArmDownInMilliSecondsForShortDistance;
 

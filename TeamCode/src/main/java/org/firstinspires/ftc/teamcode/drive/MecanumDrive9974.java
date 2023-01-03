@@ -30,6 +30,7 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunner;
 import org.firstinspires.ftc.teamcode.util.LynxModuleUtil;
+import org.ftc9974.thorcore.vision.Seeker;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -210,6 +211,63 @@ public class MecanumDrive9974 extends MecanumDrive {
     public void followTrajectorySequence(TrajectorySequence trajectorySequence) {
         followTrajectorySequenceAsync(trajectorySequence);
         waitForIdle();
+    }
+
+    public boolean strafeToLineUp(Seeker.Signature signature)
+    {
+         double strafeValueToGoTo =  0.0;
+        if(signature.hasLock())
+        {
+            double x = signature.getX().orElse(0);
+            double setpoint = 0;
+            double error = setpoint - x;
+            double correction = 0.005 * error;
+
+            strafeValueToGoTo = correction;
+            setWeightedDrivePower(
+                    new Pose2d(
+                            -0,
+                            -strafeValueToGoTo,
+                            0
+                    )
+            );
+            if (Math.abs(error) < 20)
+            {
+                setWeightedDrivePower(
+                        new Pose2d(
+                                -0,
+                                0,
+                                0
+                        )
+                );
+                return true;
+            }
+            /*
+            if(signature.getX().orElse(0) >10)
+            {
+                strafeValueToGoTo = 0.25;
+            }
+            else if(signature.getX().orElse(0)< 10)
+            {
+                strafeValueToGoTo = -0.25;
+            }
+            else
+            {
+                return true ;
+            }*/
+        }
+        else
+        {
+            setWeightedDrivePower(
+                    new Pose2d(
+                            -0,
+                            0,
+                            0
+                    )
+            );
+        }
+
+        return false;
     }
 
     public Pose2d getLastError() {
