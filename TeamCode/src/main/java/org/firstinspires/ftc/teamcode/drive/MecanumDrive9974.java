@@ -19,6 +19,7 @@ import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAcceleration
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.lynx.LynxModule;
+import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -26,10 +27,12 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunner;
 import org.firstinspires.ftc.teamcode.util.LynxModuleUtil;
+import org.ftc9974.thorcore.control.TrapezoidalMotionProfile;
 import org.ftc9974.thorcore.vision.Seeker;
 
 import java.util.ArrayList;
@@ -74,6 +77,9 @@ public class MecanumDrive9974 extends MecanumDrive {
     public DcMotorEx frontEncoderMotor;
     public DcMotorEx leftEncoderMotor;
     public DcMotorEx rightEncoderMotor;
+    public Rev2mDistanceSensor leftLaser;
+    public Rev2mDistanceSensor rightLaser;
+
 
     private BNO055IMU imu;
     private VoltageSensor batteryVoltageSensor;
@@ -129,6 +135,9 @@ public class MecanumDrive9974 extends MecanumDrive {
         frontEncoderMotor = hardwareMap.get(DcMotorEx.class, "frontEncoder");
         leftEncoderMotor = hardwareMap.get(DcMotorEx.class, "leftEncoder");
         rightEncoderMotor = hardwareMap.get(DcMotorEx.class, "rightEncoder");
+        rightLaser = hardwareMap.get(Rev2mDistanceSensor.class,"rightLaser");
+        leftLaser = hardwareMap.get(Rev2mDistanceSensor.class,"leftLaser");
+
 
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
 
@@ -221,7 +230,7 @@ public class MecanumDrive9974 extends MecanumDrive {
             double x = signature.getX().orElse(0);
             double setpoint = 0;
             double error = setpoint - x;
-            double correction = 0.005 * error;
+            double correction = 0.0065 * error;
 
             strafeValueToGoTo = correction;
             setWeightedDrivePower(
@@ -231,7 +240,7 @@ public class MecanumDrive9974 extends MecanumDrive {
                             0
                     )
             );
-            if (Math.abs(error) < 20)
+            if (Math.abs(error) < 10)//20 orig
             {
                 setWeightedDrivePower(
                         new Pose2d(
@@ -269,6 +278,8 @@ public class MecanumDrive9974 extends MecanumDrive {
 
         return false;
     }
+
+
 
     public Pose2d getLastError() {
         return trajectorySequenceRunner.getLastPoseError();

@@ -44,7 +44,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 @Autonomous(name = "Blue_Right_Auto_4_Cone_NV", group = "Autonomous")
 //@Disabled
 
-public class Blue_Right_AutoPowerPlayFromFourConesWithNeonVision extends AutoPowerPlayWithFourConesWithNeonVision {
+public class Blue_Right_AutoPowerPlayFromFourConesWithNeonVision extends AutoPowerPlayWithFourConesWithNeonVisionLaserEyes {
 
     public Blue_Right_AutoPowerPlayFromFourConesWithNeonVision()
     {

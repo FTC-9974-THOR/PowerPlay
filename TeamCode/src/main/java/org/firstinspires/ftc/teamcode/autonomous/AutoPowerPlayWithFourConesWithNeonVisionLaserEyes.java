@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.teamcode.AdrianControls.Claw;
@@ -19,11 +20,14 @@ import org.firstinspires.ftc.teamcode.AdrianControls.VuforiaStuff2023;
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.MecanumDrive9974;
 import org.firstinspires.ftc.teamcode.drive.advanced.PoseStorage;
+import org.ftc9974.thorcore.control.TrapezoidalMotionProfile;
 import org.ftc9974.thorcore.seasonal.powerplay.PowerPlaySeeker;
 import org.ftc9974.thorcore.vision.Seeker;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
+
+import javax.crypto.ExemptionMechanism;
 
 /**
  * This opmode explains how you follow multiple trajectories in succession, asynchronously. This
@@ -45,7 +49,7 @@ import java.util.concurrent.TimeUnit;
  */
 @Autonomous(group = "advanced")
 @Disabled
-public class AutoPowerPlayWithFourConesWithNeonVision extends LinearOpMode {
+public class AutoPowerPlayWithFourConesWithNeonVisionLaserEyes extends LinearOpMode {
 
     // This enum defines our "state"
     // This is essentially just defines the possible steps our program will take
@@ -99,7 +103,8 @@ public class AutoPowerPlayWithFourConesWithNeonVision extends LinearOpMode {
     private double xValueForChannel = 0.0;
     private double xValueForChannelLeft = -14.0;
     private double xValueForChannelRight = -15.5;
-    public AutoPowerPlayWithFourConesWithNeonVision(int SideWeAreOn, int TeamColor) {
+    private boolean strafeWithLaserEyesCalled = false;
+    public AutoPowerPlayWithFourConesWithNeonVisionLaserEyes(int SideWeAreOn, int TeamColor) {
         super();
         this.sideWeAreOn = SideWeAreOn;
         this.teamColor = TeamColor;
@@ -448,6 +453,7 @@ public class AutoPowerPlayWithFourConesWithNeonVision extends LinearOpMode {
                     if(!linearSlide.isBusy() && !drive.isBusy() )
                     {
                         currentState = State.lookForTheLine;
+                        strafeWithLaserEyesCalled = true;
                         drive.followTrajectoryAsync(forwardToDetectionLine);
                         //drive.followTrajectoryAsync(forwardTowardsXConeStack);
                     }
@@ -458,11 +464,11 @@ public class AutoPowerPlayWithFourConesWithNeonVision extends LinearOpMode {
                         case 1:
                             if(!drive.isBusy())
                             {
-                                if(drive.strafeToLineUp(signatureToRun))
+                                if(strafeToLineUpWithLaser(signatureToRun,drive))
                                 {
                                     currentState = State.forwardTowardsXConeStack;
-                                    drive.setPoseEstimate(forwardTowardsXConeStack.start());
-                                    drive.followTrajectoryAsync(forwardTowardsXConeStack);
+                                    drive.setPoseEstimate(forwardTowardsXConeStack.end());
+                                    //drive.followTrajectoryAsync(forwardTowardsXConeStack);
 
                                 }
                             }
@@ -471,11 +477,11 @@ public class AutoPowerPlayWithFourConesWithNeonVision extends LinearOpMode {
                         case 2:
                             if(!drive.isBusy() && !rotatingArm.isBusy() && !linearSlide.isBusy())
                             {
-                                if(drive.strafeToLineUp(signatureToRun))
+                                if(strafeToLineUpWithLaser(signatureToRun,drive))
                                 {
                                     currentState = State.forwardTowardsXConeStack;
-                                    drive.setPoseEstimate(forwardTowardsXConeStackThirdPole.start());
-                                    drive.followTrajectoryAsync(forwardTowardsXConeStackThirdPole);
+                                    drive.setPoseEstimate(forwardTowardsXConeStackThirdPole.end());
+                                    //drive.followTrajectoryAsync(forwardTowardsXConeStackThirdPole);
 
                                 }
                             }
@@ -491,11 +497,11 @@ public class AutoPowerPlayWithFourConesWithNeonVision extends LinearOpMode {
                         case 3:
                             if(!drive.isBusy() && !rotatingArm.isBusy() && !linearSlide.isBusy())
                             {
-                                if(drive.strafeToLineUp(signatureToRun))
+                                if(strafeToLineUpWithLaser(signatureToRun,drive))
                                 {
                                     currentState = State.forwardTowardsXConeStack;
-                                    drive.setPoseEstimate(forwardTowardsXConeStackFourthPole.start());
-                                    drive.followTrajectoryAsync(forwardTowardsXConeStackFourthPole);
+                                    drive.setPoseEstimate(forwardTowardsXConeStackFourthPole.end());
+                                    //drive.followTrajectoryAsync(forwardTowardsXConeStackFourthPole);
 
                                 }
                             }
@@ -514,7 +520,7 @@ public class AutoPowerPlayWithFourConesWithNeonVision extends LinearOpMode {
     /*                if(!drive.isBusy())
                     {
 
-                        if(drive.strafeToLineUp(signatureToRun))
+                        if(drive.strafeToLineUpWithLaser(signatureToRun))
                         {
                             currentState = State.forwardTowardsXConeStack;
                             drive.setPoseEstimate(forwardTowardsXConeStack.start());
@@ -776,6 +782,72 @@ public class AutoPowerPlayWithFourConesWithNeonVision extends LinearOpMode {
             //telemetry.addData("ArmPosition",drive.SlideMotor.getCurrentPosition());
             telemetry.update();
         }
+    }
+
+    public boolean strafeToLineUpWithLaser(Seeker.Signature signature, MecanumDrive9974 drive)
+    {
+        double error = Double.MAX_VALUE;
+        if(!strafeWithLaserEyesCalled)
+        {
+            error = 0;
+        }
+        double strafeValueToGoTo =  0.0;
+        if(signature.hasLock()&&strafeWithLaserEyesCalled)
+        {
+            double x = signature.getX().orElse(0);
+            double setpoint = 0;
+            error = setpoint - x;
+
+            strafeValueToGoTo = -0.0065 * error;
+        }
+
+        // driving logic
+        final double stoppingDistance = 100;
+        final TrapezoidalMotionProfile driveProfile = new TrapezoidalMotionProfile(
+                new TrapezoidalMotionProfile.Node(stoppingDistance, 0.03),
+                new TrapezoidalMotionProfile.Node(300, 0.3)
+        );
+        double laserDistance = Math.min(drive.leftLaser.getDistance(DistanceUnit.MM), drive.rightLaser.getDistance(DistanceUnit.MM));
+        double drivingSpeed = 0;
+        boolean driveIsDone = drive.getLocalizer().getPoseEstimate().getX() < xValueForwardTowardsXConeStack + 1 || laserDistance < stoppingDistance;
+        if (driveIsDone) {
+            drivingSpeed = 0;
+        } else {
+            drivingSpeed = driveProfile.apply(laserDistance);
+        }
+
+        double headingSetpoint = Math.PI; // make sure to update this depending on the side of the auto
+        double headingError = headingSetpoint - drive.getLocalizer().getPoseEstimate().getHeading();
+        double headingCorrection = 0.8 * headingError;
+
+        boolean isDone = Math.abs(error) < 10 && driveIsDone;
+        if(Math.abs(error)<10) {
+            strafeWithLaserEyesCalled = false;
+            strafeValueToGoTo=0;
+        }
+        if (isDone)//20 orig
+        {
+            strafeWithLaserEyesCalled = true;
+            drive.setWeightedDrivePower(
+                    new Pose2d(
+                            -0,
+                            0,
+                            0
+                    )
+            );
+        }
+        else
+        {
+            drive.setWeightedDrivePower(
+                    new Pose2d(
+                            drivingSpeed,
+                            strafeValueToGoTo,
+                            headingCorrection
+                    )
+            );
+        }
+
+        return isDone;
     }
 
     // Assume we have a hardware class called lift

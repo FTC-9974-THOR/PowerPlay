@@ -56,7 +56,7 @@ public class LinearSlidePIDWithVelocity {
     private static final double level4ConeStackHeight = 0.093;
     private static final double level3ConeStackHeight = 0.063;
     private static final double aboveTheCameraHeight = 0.1;
-    private static final double levelToRaiseTheConeFromStack = 0.25;
+    private static final double levelToRaiseTheConeFromStack = 0.225; // 0.25 was orig.
     //endregion
     public static class MotorConstants {
         public double kV, kB, kStatic;
