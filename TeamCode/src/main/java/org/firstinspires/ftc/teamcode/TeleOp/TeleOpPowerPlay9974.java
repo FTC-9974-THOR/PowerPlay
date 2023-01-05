@@ -310,6 +310,10 @@ public class TeleOpPowerPlay9974 extends LinearOpMode {
             telemetry.addData("TurretPotentiometerVoltage", turret.getTurretPotentiometerVoltage());
             telemetry.addData("isMotionProfillingBeingUsed", linearslide.isMotionProfillingBeingUsed);
             telemetry.addData("PositionInTicks", rotatorArm.getRotatorArmPositionTick());
+            telemetry.addData("XValueForPID",-gamepad1.left_stick_y * maxSpeedDriveTrainPercentage);
+            telemetry.addData("YValueForPID",-gamepad1.left_stick_x * maxSpeedDriveTrainPercentage);
+            telemetry.addData("MaxHeading",-gamepad1.right_stick_x * maxSpeedDriveTrainPercentageForTurn);
+
 
             telemetry.update();
             telemetry.update();
