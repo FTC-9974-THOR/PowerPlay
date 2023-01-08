@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.autonomous;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -43,7 +42,7 @@ import java.util.concurrent.TimeUnit;
  */
 @Autonomous(group = "advanced")
 @Disabled
-public class AutoPowerPlayWithFourConesAndRotatorArm extends LinearOpMode {
+public class AutoPowerPlayWithFiveConesAndRotatorArm extends LinearOpMode {
 
     // This enum defines our "state"
     // This is essentially just defines the possible steps our program will take
@@ -89,6 +88,7 @@ public class AutoPowerPlayWithFourConesAndRotatorArm extends LinearOpMode {
     private double yValueForChannelForConeDropOff = 0.0;
     private double yValueForChannelForConeDropOffLeft = -21;
     private double yValueForChannelForConeDropOffRight = -20.0;
+
     private double xValueForwardTowardsXConeStack = 0.0;
     private double xValueForwardTowardsXConeStackLeftClaw1 = -59.7;
     private double xValueForwardTowardsXConeStackRightClaw1 = -60.25;
@@ -97,7 +97,10 @@ public class AutoPowerPlayWithFourConesAndRotatorArm extends LinearOpMode {
     private double xValueForChannel = 0.0;
     private double xValueForChannelLeft = -14.0;
     private double xValueForChannelRight = -15.0;
-    public AutoPowerPlayWithFourConesAndRotatorArm(int TeamColor, boolean SlideToSide) {
+    private double xValueForChannelShortPole = 0.0;
+    private double xValueForChannelShortPoleLeft = -36.75;
+    private double xValueForChannelShortPoleRight = -38.25;
+    public AutoPowerPlayWithFiveConesAndRotatorArm(int TeamColor, boolean SlideToSide) {
         super();
         teamColor = TeamColor;
         slideToSide = SlideToSide;
@@ -137,6 +140,7 @@ public class AutoPowerPlayWithFourConesAndRotatorArm extends LinearOpMode {
             yValueForChannelHighPole = yValueForChannelHighPoleLeft;
             yValueForChannelForConeDropOff = yValueForChannelForConeDropOffLeft;
             xValueForChannel = xValueForChannelLeft;
+            xValueForChannelShortPole = xValueForChannelShortPoleLeft;
             if(claw.clawNum == 1){
                 xValueForwardTowardsXConeStack = xValueForwardTowardsXConeStackLeftClaw1;
             }
@@ -151,6 +155,7 @@ public class AutoPowerPlayWithFourConesAndRotatorArm extends LinearOpMode {
             yValueForChannelHighPole = yValueForChannelHighPoleRight;
             yValueForChannelForConeDropOff = yValueForChannelForConeDropOffRight;
             xValueForChannel = xValueForChannelRight;
+            xValueForChannelShortPole = xValueForChannelShortPoleRight;
             if(claw.clawNum == 1){
                 xValueForwardTowardsXConeStack = xValueForwardTowardsXConeStackRightClaw1;
             }
@@ -183,11 +188,11 @@ public class AutoPowerPlayWithFourConesAndRotatorArm extends LinearOpMode {
                 .build();
 //region Second Pole
         Trajectory backLittleTowardsSecondPole = drive.trajectoryBuilder(forwardTowardsXConeStack.end())
-                .lineToLinearHeading(new Pose2d(-58*teamColor, yValueForChannel,newAngleToUse))
+                .lineToLinearHeading(new Pose2d(-57*teamColor, yValueForChannel,newAngleToUse))
 //                .lineToLinearHeading(new Pose2d(-58, -22.5,Math.toRadians(185) ))
                 .build();
         Trajectory backTowardsSecondPole = drive.trajectoryBuilder(backLittleTowardsSecondPole.end())
-                .lineToLinearHeading(new Pose2d(xValueForChannel*teamColor, yValueForChannelForConeDropOff,newAngleToUse))
+                .lineToLinearHeading(new Pose2d(xValueForChannelShortPole*teamColor, yValueForChannelForConeDropOff,newAngleToUse))
 //                .lineToLinearHeading(new Pose2d(-50.25, -22.5,Math.toRadians(185) ))
                 .build();
 //endregion
@@ -196,11 +201,11 @@ public class AutoPowerPlayWithFourConesAndRotatorArm extends LinearOpMode {
                 .lineToLinearHeading(new Pose2d(xValueForwardTowardsXConeStack*teamColor, yValueForChannel,newAngleToUse))
                 .build();
         Trajectory backLittleTowardsThirdPole = drive.trajectoryBuilder(forwardTowardsXConeStackThirdPole.end())
-                .lineToLinearHeading(new Pose2d(-58*teamColor, yValueForChannel ,newAngleToUse))
+                .lineToLinearHeading(new Pose2d(-57*teamColor, yValueForChannel ,newAngleToUse))
 //                .lineToLinearHeading(new Pose2d(-58, -22.5,Math.toRadians(185) ))
                 .build();
         Trajectory backTowardsThirdPole = drive.trajectoryBuilder(backLittleTowardsThirdPole.end())
-                .lineToLinearHeading(new Pose2d(xValueForChannel*teamColor, yValueForChannelForConeDropOff,newAngleToUse))
+                .lineToLinearHeading(new Pose2d(xValueForChannelShortPole*teamColor, yValueForChannelForConeDropOff,newAngleToUse))
 //                .lineToLinearHeading(new Pose2d(-50.25, -22.5,Math.toRadians(185) ))
                 .build();
 //endregion
@@ -209,11 +214,27 @@ public class AutoPowerPlayWithFourConesAndRotatorArm extends LinearOpMode {
                 .lineToLinearHeading(new Pose2d(xValueForwardTowardsXConeStack*teamColor, yValueForChannel,newAngleToUse))
                 .build();
         Trajectory backLittleTowardsFourthPole = drive.trajectoryBuilder(forwardTowardsXConeStackFourthPole.end())
-                .lineToLinearHeading(new Pose2d(-58*teamColor, yValueForChannel ,newAngleToUse))
+                .lineToLinearHeading(new Pose2d(-57*teamColor, yValueForChannel ,newAngleToUse))
 //                .lineToLinearHeading(new Pose2d(-58, -22.5,Math.toRadians(185) ))
                 .build();
         Trajectory backTowardsFourthPole = drive.trajectoryBuilder(backLittleTowardsFourthPole.end())
-                .lineToLinearHeading(new Pose2d(xValueForChannel*teamColor, yValueForChannelHighPole,newAngleToUse)
+                .lineToLinearHeading(new Pose2d(xValueForChannel*teamColor, yValueForChannelForConeDropOff,newAngleToUse)
+//                        ,drive.getVelocityConstraint(30.0, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+//                        drive.getAccelerationConstraint(30.0)
+                )
+//                .lineToLinearHeading(new Pose2d(-50.25, -22.5,Math.toRadians(185) ))
+                .build();
+//endregion
+//region Fifth Pole
+        Trajectory forwardTowardsXConeStackFifthPole = drive.trajectoryBuilder(backTowardsFourthPole.end())
+                .lineToLinearHeading(new Pose2d(xValueForwardTowardsXConeStack*teamColor, yValueForChannel,newAngleToUse))
+                .build();
+        Trajectory backLittleTowardsFifthPole = drive.trajectoryBuilder(forwardTowardsXConeStackFifthPole.end())
+                .lineToLinearHeading(new Pose2d(-57*teamColor, yValueForChannel ,newAngleToUse))
+//                .lineToLinearHeading(new Pose2d(-58, -22.5,Math.toRadians(185) ))
+                .build();
+        Trajectory backTowardsFfifthPole = drive.trajectoryBuilder(backLittleTowardsFifthPole.end())
+                .lineToLinearHeading(new Pose2d(xValueForChannel*teamColor, yValueForChannelForConeDropOff,newAngleToUse)
 //                        ,drive.getVelocityConstraint(30.0, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
 //                        drive.getAccelerationConstraint(30.0)
                 )
@@ -221,7 +242,7 @@ public class AutoPowerPlayWithFourConesAndRotatorArm extends LinearOpMode {
                 .build();
 //endregion
         
-        Trajectory parkPositionOneDot = drive.trajectoryBuilder(backTowardsFourthPole.end())
+        Trajectory parkPositionOneDot = drive.trajectoryBuilder(backTowardsFfifthPole.end())
                 .lineToLinearHeading(new Pose2d(-58*teamColor, yValueForChannel ,newAngleToUse)
                         ,drive.getVelocityConstraint(57.0, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         drive.getAccelerationConstraint(57.0)
@@ -404,7 +425,6 @@ public class AutoPowerPlayWithFourConesAndRotatorArm extends LinearOpMode {
                         {
                             rotatingArm.setRotatorArmPositionRaw(RotatingArm.ROTATOR_BOTTOM);
                             linearSlide.moveToLevel5ConeStack();
-
                         }
                     }
                     break;
@@ -468,7 +488,23 @@ public class AutoPowerPlayWithFourConesAndRotatorArm extends LinearOpMode {
                                 }
                             }
                             break;
-                    }
+                        case 4:
+                            if(!drive.isBusy() && !rotatingArm.isBusy() && !linearSlide.isBusy())
+                            {
+                                currentState = State.pickupSecondCone;
+                                claw.CloseClaw();
+                                sleep(300);
+                                linearSlide.moveToLevelToRaiseTheConeFromStack();
+                            }
+                            else
+                            {
+                                if(timer.time(TimeUnit.MILLISECONDS) > timeToWaitBeforeBringingRotatingArmDownBetweenCycles)
+                                {
+                                    rotatingArm.setRotatorArmPositionRaw(RotatingArm.ROTATOR_BOTTOM);
+                                    linearSlide.moveToLevel2ConeStack();
+                                }
+                            }
+                            break;                    }
                     break;
                 case pickupSecondCone:
                     if(!linearSlide.isBusy())
@@ -484,7 +520,9 @@ public class AutoPowerPlayWithFourConesAndRotatorArm extends LinearOpMode {
                             case 3:
                                 drive.followTrajectoryAsync(backLittleTowardsFourthPole);
                                 break;
-                        }
+                            case 4:
+                                drive.followTrajectoryAsync(backLittleTowardsFifthPole);
+                                break;                        }
 
                     }
                     break;
@@ -495,7 +533,7 @@ public class AutoPowerPlayWithFourConesAndRotatorArm extends LinearOpMode {
                         switch(counterForAutoCycle) {
                             case 1:
                                 drive.followTrajectoryAsync(backTowardsSecondPole);
-                                linearSlide.moveToMiddlePole();
+                                linearSlide.moveToLowPole();
                                 if(teamColor <0) {
                                     rotatingArm.setRotatorArmPositionRaw(rotatingArm.ROTATOR_RIGHT);
                                 }
@@ -506,7 +544,7 @@ public class AutoPowerPlayWithFourConesAndRotatorArm extends LinearOpMode {
                                 break;
                             case 2:
                                 drive.followTrajectoryAsync(backTowardsThirdPole);
-                                linearSlide.moveToMiddlePole();
+                                linearSlide.moveToLowPole();
                                 if(teamColor <0) {
                                     rotatingArm.setRotatorArmPositionRaw(rotatingArm.ROTATOR_RIGHT);
                                 }
@@ -517,15 +555,27 @@ public class AutoPowerPlayWithFourConesAndRotatorArm extends LinearOpMode {
                                 break;
                             case 3:
                                 drive.followTrajectoryAsync(backTowardsFourthPole);
-                                linearSlide.moveToHighPole();
+                                linearSlide.moveToMiddlePole();
                                 if(teamColor <0) {
-                                    rotatingArm.setRotatorArmPositionRaw(rotatingArm.ROTATOR_LEFT);
+                                    rotatingArm.setRotatorArmPositionRaw(rotatingArm.ROTATOR_RIGHT);
                                 }
                                 else
                                 {
-                                    rotatingArm.setRotatorArmPositionRaw(rotatingArm.ROTATOR_RIGHT);
+                                    rotatingArm.setRotatorArmPositionRaw(rotatingArm.ROTATOR_LEFT);
                                 }
                                 break;
+                            case 4:
+                                drive.followTrajectoryAsync(backLittleTowardsFifthPole);
+                                linearSlide.moveToMiddlePole();
+                                if(teamColor <0) {
+                                    rotatingArm.setRotatorArmPositionRaw(rotatingArm.ROTATOR_RIGHT);
+                                }
+                                else
+                                {
+                                    rotatingArm.setRotatorArmPositionRaw(rotatingArm.ROTATOR_LEFT);
+                                }
+                                break;
+
                         }
                     }
                     break;
@@ -539,11 +589,21 @@ public class AutoPowerPlayWithFourConesAndRotatorArm extends LinearOpMode {
                     }
                     break;
                 case placeTheConeInSecondPole:
-                    if(claw.clawMode == Claw.statesWithinClaw.IDLE)
+                    if(counterForAutoCycle == 1 || counterForAutoCycle == 2)
                     {
-                        claw.clawMode = Claw.statesWithinClaw.linearSlideDown;
+                        claw.OpenClaw();
+                        sleep(200);
+                        claw.clawMode = Claw.statesWithinClaw.clawOpenDone;
                     }
-                    claw.OpenClawWithLinearSlide();
+                    else
+                    {
+                        if(claw.clawMode == Claw.statesWithinClaw.IDLE)
+                        {
+                            claw.clawMode = Claw.statesWithinClaw.linearSlideDown;
+                        }
+                        claw.OpenClawWithLinearSlide();
+                    }
+
                     if(claw.clawMode == Claw.statesWithinClaw.clawOpenDone) {
 
                         //sleep(300);
@@ -562,6 +622,12 @@ public class AutoPowerPlayWithFourConesAndRotatorArm extends LinearOpMode {
                                 timer.reset();
                                 break;
                             case 3:
+                                counterForAutoCycle += 1;
+                                drive.followTrajectoryAsync(forwardTowardsXConeStackFifthPole);
+                                currentState = State.forwardTowardsXConeStack;
+                                timer.reset();
+                                break;
+                            case 4:
                                 currentState = State.goToTheParkingPosition;
                                 break;
 
@@ -617,9 +683,9 @@ public class AutoPowerPlayWithFourConesAndRotatorArm extends LinearOpMode {
                     timer.reset();
                     break;
                 case lowerTheRotatorAndSlide:
-                    if (!drive.isBusy()) {
+                    if (!drive.isBusy() && !rotatingArm.isBusy()&& !linearSlide.isBusy()) {
                         linearSlide.moveToAboveTheCameraHeight();
-                        currentState = State.parkPosition;
+						currentState = State.parkPosition;
                         ////drive.ArmLifterAsyncUpdate(levelArmShouldGoTo);
                         // drive.followTrajectoryAsync(goTowardsSecondPoleFirst);
                     }
@@ -629,6 +695,7 @@ public class AutoPowerPlayWithFourConesAndRotatorArm extends LinearOpMode {
                         {
                             rotatingArm.setRotatorArmPositionRaw(RotatingArm.ROTATOR_BOTTOM);
                             linearSlide.moveToAboveTheCameraHeight();
+
                         }
                     }
                     break;

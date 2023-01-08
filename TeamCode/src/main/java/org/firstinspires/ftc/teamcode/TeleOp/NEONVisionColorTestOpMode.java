@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import androidx.annotation.NonNull;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -18,6 +19,7 @@ import org.ftc9974.thorcore.vision.NEONVision;
 import java.io.IOException;
 
 @TeleOp(name = "NEONVision Color Test")
+@Disabled
 public class NEONVisionColorTestOpMode extends LinearOpMode {
 
     private static class YUVColor {

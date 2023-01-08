@@ -55,8 +55,9 @@ public class LinearSlidePIDWithVelocity {
     private static final double level5ConeStackHeight = 0.120;
     private static final double level4ConeStackHeight = 0.093;
     private static final double level3ConeStackHeight = 0.063;
+    private static final double level2ConeStackHeight = 0.033;
     private static final double aboveTheCameraHeight = 0.1;
-    private static final double levelToRaiseTheConeFromStack = 0.225; // 0.25 was orig.
+    private static final double levelToRaiseTheConeFromStack = 0.24; // 0.25 was orig.
     //endregion
     public static class MotorConstants {
         public double kV, kB, kStatic;
@@ -156,6 +157,7 @@ public class LinearSlidePIDWithVelocity {
     public void moveToLevel5ConeStack(){this.moveTo(level5ConeStackHeight);}
     public void moveToLevel4ConeStack(){this.moveTo(level4ConeStackHeight);}
     public void moveToLevel3ConeStack(){this.moveTo(level3ConeStackHeight);}
+    public void moveToLevel2ConeStack(){this.moveTo(level2ConeStackHeight);}
     public void moveToLevelToRaiseTheConeFromStack(){this.moveTo(levelToRaiseTheConeFromStack);}
     public void moveToAboveTheCameraHeight(){this.moveTo(aboveTheCameraHeight);}
     public double getPosition() {return metersPerTick * Lift.getCurrentPosition();}

@@ -5,7 +5,8 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
-import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;																	  
+import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+
 /*
  * Constants shared between multiple drive types.
  *
@@ -18,7 +19,7 @@ import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
  * and op modes themselves.
  */
 @Config
-public class DriveConstants {
+public class DriveConstantsBackupAfterLastLeagueMeetAndBeforeNewOdoPods {
 
     /*
     Initialize and instantiate vuforia variables

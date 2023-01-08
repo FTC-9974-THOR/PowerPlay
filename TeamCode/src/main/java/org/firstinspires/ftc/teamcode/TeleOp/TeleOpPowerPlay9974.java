@@ -21,7 +21,7 @@ import org.firstinspires.ftc.teamcode.drive.MecanumDrive9974;
  */
 
 
-@com.qualcomm.robotcore.eventloop.opmode.TeleOp(group = "drive")
+@com.qualcomm.robotcore.eventloop.opmode.TeleOp(group = "Drive_1")
 public class TeleOpPowerPlay9974 extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {

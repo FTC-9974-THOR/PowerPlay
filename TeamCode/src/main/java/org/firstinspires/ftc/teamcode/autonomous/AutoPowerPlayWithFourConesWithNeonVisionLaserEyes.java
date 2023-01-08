@@ -91,18 +91,21 @@ public class AutoPowerPlayWithFourConesWithNeonVisionLaserEyes extends LinearOpM
 
     private double yValueForChannel = 0.0;
     private double yValueForChannelLeft = -20.3;
-    private double yValueForChannelRight = -20.3;
+    private double yValueForChannelRight = -19.2;
     private double yValueForChannelHighPole = 0.0;
-    private double yValueForChannelHighPoleLeft = -21;
-    private double yValueForChannelHighPoleRight = -21.5;
+    private double yValueForChannelHighPoleLeft = -21.5;
+    private double yValueForChannelHighPoleRight = -20;
+    private double yValueForChannelForConeDropOff = 0.0;
+    private double yValueForChannelForConeDropOffLeft = -21;
+    private double yValueForChannelForConeDropOffRight = -20.0;
     private double xValueForwardTowardsXConeStack = 0.0;
     private double xValueForwardTowardsXConeStackLeftClaw1 = -59.7;
-    private double xValueForwardTowardsXConeStackRightClaw1 = -59.7;
+    private double xValueForwardTowardsXConeStackRightClaw1 = -60.25;
     private double xValueForwardTowardsXConeStackLeftClaw2 = -59.5;
     private double xValueForwardTowardsXConeStackRightClaw2 = -59.7;
     private double xValueForChannel = 0.0;
     private double xValueForChannelLeft = -14.0;
-    private double xValueForChannelRight = -15.5;
+    private double xValueForChannelRight = -15.0;
     private boolean strafeWithLaserEyesCalled = false;
     public AutoPowerPlayWithFourConesWithNeonVisionLaserEyes(int SideWeAreOn, int TeamColor) {
         super();
@@ -163,6 +166,7 @@ public class AutoPowerPlayWithFourConesWithNeonVisionLaserEyes extends LinearOpM
         {
             yValueForChannel = yValueForChannelLeft;
             yValueForChannelHighPole = yValueForChannelHighPoleLeft;
+            yValueForChannelForConeDropOff = yValueForChannelForConeDropOffLeft;
             xValueForChannel = xValueForChannelLeft;
             if(claw.clawNum == 1){
                 xValueForwardTowardsXConeStack = xValueForwardTowardsXConeStackLeftClaw1;
@@ -176,6 +180,7 @@ public class AutoPowerPlayWithFourConesWithNeonVisionLaserEyes extends LinearOpM
         {
             yValueForChannel = yValueForChannelRight;
             yValueForChannelHighPole = yValueForChannelHighPoleRight;
+            yValueForChannelForConeDropOff = yValueForChannelForConeDropOffRight;
             xValueForChannel = xValueForChannelRight;
             if(claw.clawNum == 1){
                 xValueForwardTowardsXConeStack = xValueForwardTowardsXConeStackRightClaw1;
@@ -216,7 +221,7 @@ public class AutoPowerPlayWithFourConesWithNeonVisionLaserEyes extends LinearOpM
 //                .lineToLinearHeading(new Pose2d(-58, -22.5,Math.toRadians(185) ))
                 .build();
         Trajectory backTowardsSecondPole = drive.trajectoryBuilder(backLittleTowardsSecondPole.end())
-                .lineToLinearHeading(new Pose2d(xValueForChannel* sideWeAreOn, -21,newAngleToUse))
+                .lineToLinearHeading(new Pose2d(xValueForChannel* sideWeAreOn, yValueForChannelForConeDropOff,newAngleToUse))
 //                .lineToLinearHeading(new Pose2d(-50.25, -22.5,Math.toRadians(185) ))
                 .build();
 //endregion
@@ -232,7 +237,7 @@ public class AutoPowerPlayWithFourConesWithNeonVisionLaserEyes extends LinearOpM
 //                .lineToLinearHeading(new Pose2d(-58, -22.5,Math.toRadians(185) ))
                 .build();
         Trajectory backTowardsThirdPole = drive.trajectoryBuilder(backLittleTowardsThirdPole.end())
-                .lineToLinearHeading(new Pose2d(xValueForChannel* sideWeAreOn, -21,newAngleToUse))
+                .lineToLinearHeading(new Pose2d(xValueForChannel* sideWeAreOn, yValueForChannelForConeDropOff,newAngleToUse))
 //                .lineToLinearHeading(new Pose2d(-50.25, -22.5,Math.toRadians(185) ))
                 .build();
 //endregion
@@ -257,9 +262,9 @@ public class AutoPowerPlayWithFourConesWithNeonVisionLaserEyes extends LinearOpM
 //endregion
         
         Trajectory parkPositionOneDot = drive.trajectoryBuilder(backTowardsFourthPole.end())
-                .lineToLinearHeading(new Pose2d(-53* sideWeAreOn, yValueForChannel ,newAngleToUse)
-                        ,drive.getVelocityConstraint(50.0, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        drive.getAccelerationConstraint(50.0)
+                .lineToLinearHeading(new Pose2d(-56.24* sideWeAreOn, yValueForChannel ,newAngleToUse)
+                        ,drive.getVelocityConstraint(57.0, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        drive.getAccelerationConstraint(57.0)
                 )
 //                .lineToLinearHeading(new Pose2d(-58, -22,Math.toRadians(185) ))
                 .build();
@@ -438,13 +443,13 @@ public class AutoPowerPlayWithFourConesWithNeonVisionLaserEyes extends LinearOpM
                         if(timer.time(TimeUnit.MILLISECONDS) > timeToWaitBeforeBringingRotatingArmDownInMilliSeconds)
                         {
                             rotatingArm.setRotatorArmPositionRaw(RotatingArm.ROTATOR_BOTTOM);
+							linearSlide.moveToLevel5ConeStack();
                         }
                     }
                     break;
                 case forwardTowardsParking:
                     if(!drive.isBusy()&& !rotatingArm.isBusy())
                     {
-                        linearSlide.moveToLevel5ConeStack();
                         drive.turn(Math.toRadians(90* sideWeAreOn));
                         currentState = State.forwardTowardsYConeStack;
                     }
@@ -737,6 +742,7 @@ public class AutoPowerPlayWithFourConesWithNeonVisionLaserEyes extends LinearOpM
                         if(timer.time(TimeUnit.MILLISECONDS)>timeToWaitBeforeBringingRotatingArmDownInMilliSeconds)
                         {
                             rotatingArm.setRotatorArmPositionRaw(RotatingArm.ROTATOR_BOTTOM);
+                            linearSlide.moveToAboveTheCameraHeight();
                         }
                     }
                     break;
@@ -816,8 +822,18 @@ public class AutoPowerPlayWithFourConesWithNeonVisionLaserEyes extends LinearOpM
             drivingSpeed = driveProfile.apply(laserDistance);
         }
 
-        double headingSetpoint = Math.PI; // make sure to update this depending on the side of the auto
+        double headingSetpoint = Math.toRadians(90)+Math.toRadians(90* sideWeAreOn);; // make sure to update this depending on the side of the auto
         double headingError = headingSetpoint - drive.getLocalizer().getPoseEstimate().getHeading();
+        // wraparound logic
+        final double HEADING_RANGE = 2 * Math.PI;
+        headingError %= HEADING_RANGE;
+        if (Math.abs(headingError) > HEADING_RANGE / 2) {
+            if (headingError > 0) {
+                headingError -= HEADING_RANGE;
+            } else {
+                headingError += HEADING_RANGE;
+            }
+        }
         double headingCorrection = 0.8 * headingError;
 
         boolean isDone = Math.abs(error) < 10 && driveIsDone;

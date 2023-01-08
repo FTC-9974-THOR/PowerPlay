@@ -13,8 +13,8 @@ public class Claw {
     public double CLAW_OPEN = MathUtilities.map(1100, 500, 2500, 0,1),
             CLAW_CLOSED = MathUtilities.map(1465, 500, 2500, 0,1),
     //Claw 1 Positions
-    CLAW_OPEN_1 = MathUtilities.map(1100, 500, 2500, 0,1),
-    CLAW_CLOSED_1 = MathUtilities.map(1465, 500, 2500, 0,1),
+    CLAW_OPEN_1 = MathUtilities.map(1600, 500, 2500, 0,1),
+    CLAW_CLOSED_1 = MathUtilities.map(1970, 500, 2500, 0,1),
     //Claw 2 Positions
     CLAW_OPEN_2 = MathUtilities.map(1500, 500, 2500, 0,1),
     CLAW_CLOSED_2 = MathUtilities.map(1865, 500, 2500, 0,1);
@@ -32,7 +32,7 @@ public class Claw {
     public Servo clawServo;
     private LinearSlidePIDWithVelocity linearSlide;
     //Change this when you change Claw to pick which Claw is on.
-    public int clawNum = 2;
+    public int clawNum = 1;
 // We are getting the state of the magneticLimitSwitch(True means it's not touched)
     public Claw(HardwareMap hardwareMap, LinearSlidePIDWithVelocity linearSlide) {
         Realizer.realize(this, hardwareMap);

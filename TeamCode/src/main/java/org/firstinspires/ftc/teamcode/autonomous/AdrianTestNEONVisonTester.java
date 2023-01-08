@@ -32,6 +32,7 @@ package org.firstinspires.ftc.teamcode.autonomous;
 //import com.arcrobotics.ftclib.controller.wpilibcontroller.ArmFeedforward;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
@@ -60,7 +61,7 @@ import java.io.IOException;
  */
 
 @Autonomous(name="AdrianTestNEONVisonTester", group="Linear Opmode")
-//@Disabled
+@Disabled
 public class AdrianTestNEONVisonTester extends AdrianMecanumControls {
 
     // Declare OpMode members.

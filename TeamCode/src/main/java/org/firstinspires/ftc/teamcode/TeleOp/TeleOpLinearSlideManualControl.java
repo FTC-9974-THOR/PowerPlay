@@ -17,7 +17,7 @@ import org.firstinspires.ftc.teamcode.AdrianControls.Turret;
 
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(group = "drive")
-//@Disabled
+@Disabled
 public class TeleOpLinearSlideManualControl extends LinearOpMode {
     LinearSlidePID linearslide;
     Turret turret;
