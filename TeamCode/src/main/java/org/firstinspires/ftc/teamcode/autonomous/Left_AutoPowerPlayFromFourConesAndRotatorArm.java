@@ -29,6 +29,7 @@
 
 package org.firstinspires.ftc.teamcode.autonomous;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 /**
@@ -41,6 +42,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
  * IMPORTANT: In order to use this OpMode, you need to obtain your own Vuforia license key as
  * is explained below.
  */
+@Config
 @Autonomous(name = "Left_Auto_4_Cone", group = "Autonomous")
 //@Disabled
 
