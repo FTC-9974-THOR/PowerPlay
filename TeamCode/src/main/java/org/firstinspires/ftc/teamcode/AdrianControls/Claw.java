@@ -70,14 +70,20 @@ public class Claw {
         clawServo.setPosition(CLAW_OPEN);
         clawMode = statesWithinClaw.IDLE;
     }
-    public void OpenClawWithLinearSlide()
+    public void OpenClawWithLinearSlide(double subtractForLower)
     {
+        if(subtractForLower == linearSlide.subtractionForLowerCalcualtedHeightFast)
+        {
+            OpenClaw();
+            clawMode = statesWithinClaw.clawOpenDone;
+            return;
+        }
         switch(clawMode)
         {
             case IDLE:
                 break;
             case linearSlideDown:
-                linearSlide.moveToBelowOriginalLevel();
+                linearSlide.moveToBelowOriginalLevel(subtractForLower);
                 clawMode = statesWithinClaw.clawOpen;
                 break;
             case clawOpen:
@@ -99,6 +105,7 @@ public class Claw {
                 break;
         }
     }
+
     public void CloseClaw()
     {
         clawServo.setPosition(CLAW_CLOSED);

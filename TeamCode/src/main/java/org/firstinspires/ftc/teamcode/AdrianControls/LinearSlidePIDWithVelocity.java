@@ -45,7 +45,8 @@ public class LinearSlidePIDWithVelocity {
     //region start Values WITH Rotator Arm
     private double currentPositionForClaw = 0.0;
     private double lowerCalculatedHeight = 0.0;
-    private double subtractionForLowerCalcualtedHeight = 0.15;
+    public double subtractionForLowerCalcualtedHeight = 0.15;
+    public double subtractionForLowerCalcualtedHeightFast = 0.09;
     private static final double lowPoleHeight = 0.1;
     private static final double middlePoleHeight = 0.308; //0.297 og
     private static final double highPoleHeight = 0.521; //506 og
@@ -114,10 +115,10 @@ public class LinearSlidePIDWithVelocity {
             setTargetPosition(position);
         }
     }
-    public void moveToBelowOriginalLevel()
+    public void moveToBelowOriginalLevel(double subtractForLower)
     {
         currentPositionForClaw = this.getPosition();
-        lowerCalculatedHeight = currentPositionForClaw - subtractionForLowerCalcualtedHeight;
+        lowerCalculatedHeight = currentPositionForClaw - subtractForLower;
         this.moveTo(lowerCalculatedHeight);
     }
     public void moveToOriginalLevel()

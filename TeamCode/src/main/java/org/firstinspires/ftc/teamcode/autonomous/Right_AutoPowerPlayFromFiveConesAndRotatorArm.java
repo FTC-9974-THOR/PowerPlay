@@ -29,6 +29,7 @@
 
 package org.firstinspires.ftc.teamcode.autonomous;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
@@ -42,8 +43,9 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
  * IMPORTANT: In order to use this OpMode, you need to obtain your own Vuforia license key as
  * is explained below.
  */
+@Config
 @Autonomous(name = "Right_Auto_5_Cone", group = "Autonomous")
-@Disabled
+//@Disabled
 
 public class Right_AutoPowerPlayFromFiveConesAndRotatorArm extends AutoPowerPlayWithFiveConesAndRotatorArm {
 

@@ -422,7 +422,7 @@ public class AutoPowerPlayWithFourConesWithNeonVisionLaserEyes extends LinearOpM
                     {
                         claw.clawMode = Claw.statesWithinClaw.linearSlideDown;
                     }
-                    claw.OpenClawWithLinearSlide();
+                    claw.OpenClawWithLinearSlide(linearSlide.subtractionForLowerCalcualtedHeight);
                     if(claw.clawMode == Claw.statesWithinClaw.clawOpenDone) {
                         //sleep(300);
                         currentState = State.forwardOverShootForSignal;
@@ -657,7 +657,7 @@ public class AutoPowerPlayWithFourConesWithNeonVisionLaserEyes extends LinearOpM
                     {
                         claw.clawMode = Claw.statesWithinClaw.linearSlideDown;
                     }
-                    claw.OpenClawWithLinearSlide();
+                    claw.OpenClawWithLinearSlide(linearSlide.subtractionForLowerCalcualtedHeight);
                     if(claw.clawMode == Claw.statesWithinClaw.clawOpenDone) {
 
                         //sleep(300);

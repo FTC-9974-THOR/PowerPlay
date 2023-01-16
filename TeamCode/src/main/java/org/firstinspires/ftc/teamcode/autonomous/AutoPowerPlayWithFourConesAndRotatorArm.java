@@ -100,8 +100,8 @@ public class AutoPowerPlayWithFourConesAndRotatorArm extends LinearOpMode {
     public static  double xValueForChannelLeft = -14.0;
     public static  double xValueForChannelRight = -15.0;
 
-    public static double MAX_VEL_OVERRIDE = DriveConstants.MAX_VEL*0.70;
-    public static  double MAX_ACCEL_OVERRIDE = DriveConstants.MAX_ACCEL*0.70;
+    public static double MAX_VEL_OVERRIDE = DriveConstants.MAX_VEL*0.70; //0.7
+    public static  double MAX_ACCEL_OVERRIDE = DriveConstants.MAX_ACCEL*0.70; //0.7
     public AutoPowerPlayWithFourConesAndRotatorArm(int TeamColor, boolean SlideToSide) {
         super();
         teamColor = TeamColor;
@@ -423,7 +423,7 @@ public class AutoPowerPlayWithFourConesAndRotatorArm extends LinearOpMode {
                     {
                         claw.clawMode = Claw.statesWithinClaw.linearSlideDown;
                     }
-                    claw.OpenClawWithLinearSlide();
+                    claw.OpenClawWithLinearSlide(linearSlide.subtractionForLowerCalcualtedHeight);
                     if(claw.clawMode == Claw.statesWithinClaw.clawOpenDone) {
                         //sleep(300);
                         currentState = State.forwardOverShootForSignal;
@@ -584,7 +584,7 @@ public class AutoPowerPlayWithFourConesAndRotatorArm extends LinearOpMode {
                     {
                         claw.clawMode = Claw.statesWithinClaw.linearSlideDown;
                     }
-                    claw.OpenClawWithLinearSlide();
+                    claw.OpenClawWithLinearSlide(linearSlide.subtractionForLowerCalcualtedHeight);
                     if(claw.clawMode == Claw.statesWithinClaw.clawOpenDone) {
 
                         //sleep(300);
