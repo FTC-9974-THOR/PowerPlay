@@ -84,23 +84,23 @@ public class AutoPowerPlayWithFiveConesAndRotatorArm extends LinearOpMode {
 
     public static  double yValueForChannel = 0.0;
     public static  double yValueForChannelLeft = -20.3;
-    public static  double yValueForChannelRight = -20.3;
+    public static  double yValueForChannelRight = -20.5;
     public static  double yValueForChannelHighPole = 0.0;
     public static  double yValueForChannelHighPoleLeft = -21.5;
     public static  double yValueForChannelHighPoleRight = -20;
     public static  double yValueForChannelForConeDropOff = 0.0;
     public static  double yValueForChannelForConeDropOffLeft = -21;
-    public static  double yValueForChannelForConeDropOffRight = -20.5;
+    public static  double yValueForChannelForConeDropOffRight = -20;
     public static  double xValueForwardTowardsXConeStack = 0.0;
-    public static  double xValueForwardTowardsXConeStackLeftClaw1 = -59.0;
-    public static  double xValueForwardTowardsXConeStackRightClaw1 = -60.75; //60.75 original
+    public static  double xValueForwardTowardsXConeStackLeftClaw1 = -57.75;//58
+    public static  double xValueForwardTowardsXConeStackRightClaw1 = -61; //60.75 original
     public static  double xValueForwardTowardsXConeStackLeftClaw2 = -59.5;
     public static  double xValueForwardTowardsXConeStackRightClaw2 = -59.7;
     public static  double xValueForChannel = 0.0;
-    public static  double xValueForChannelLeft = -14.0;
-    public static  double xValueForChannelRight = -15.0; //15
+    public static  double xValueForChannelLeft = -13.5;//14.0
+    public static  double xValueForChannelRight = -15.75; //15
 	public static double distanceForOneDotLeft = -57;
-    public static double distanceForTwoDotLeft = -35;
+    public static double distanceForTwoDotLeft = -33;
     public static double distanceForThreeDotLeft = -11;
     public static double distanceForOneDotRight = -58;
     public static double distanceForTwoDotRight = -36;
@@ -202,7 +202,7 @@ public class AutoPowerPlayWithFiveConesAndRotatorArm extends LinearOpMode {
                 )
                 .build();
         Trajectory forwardToOverShootSignalCone = drive.trajectoryBuilder(initialForwardTowardsFirstPole.end())
-                .lineToLinearHeading(new Pose2d(-36*teamColor, -14 ,Math.toRadians(90))
+                .lineToLinearHeading(new Pose2d(-36*teamColor, -15 ,Math.toRadians(90))
                         ,drive.getVelocityConstraint(MAX_VEL_OVERRIDE, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         drive.getAccelerationConstraint(MAX_ACCEL_OVERRIDE)
                 )
@@ -222,7 +222,7 @@ public class AutoPowerPlayWithFiveConesAndRotatorArm extends LinearOpMode {
                 .build();
 //region Second Pole
         Trajectory backLittleTowardsSecondPole = drive.trajectoryBuilder(forwardTowardsXConeStack.end())
-                .lineToLinearHeading(new Pose2d(-58*teamColor, yValueForChannel,newAngleToUse)
+                .lineToLinearHeading(new Pose2d(-56*teamColor, yValueForChannel,newAngleToUse)
                         ,drive.getVelocityConstraint(MAX_VEL_OVERRIDE, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         drive.getAccelerationConstraint(MAX_ACCEL_OVERRIDE)
                 )
@@ -244,7 +244,7 @@ public class AutoPowerPlayWithFiveConesAndRotatorArm extends LinearOpMode {
                 )
                 .build();
         Trajectory backLittleTowardsThirdPole = drive.trajectoryBuilder(forwardTowardsXConeStackThirdPole.end())
-                .lineToLinearHeading(new Pose2d(-58*teamColor, yValueForChannel ,newAngleToUse)
+                .lineToLinearHeading(new Pose2d(-56*teamColor, yValueForChannel ,newAngleToUse)
                         ,drive.getVelocityConstraint(MAX_VEL_OVERRIDE, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         drive.getAccelerationConstraint(MAX_ACCEL_OVERRIDE)
                 )
@@ -266,7 +266,7 @@ public class AutoPowerPlayWithFiveConesAndRotatorArm extends LinearOpMode {
                 )
                 .build();
         Trajectory backLittleTowardsFourthPole = drive.trajectoryBuilder(forwardTowardsXConeStackFourthPole.end())
-                .lineToLinearHeading(new Pose2d(-58*teamColor, yValueForChannel ,newAngleToUse)
+                .lineToLinearHeading(new Pose2d(-56*teamColor, yValueForChannel ,newAngleToUse)
                         ,drive.getVelocityConstraint(MAX_VEL_OVERRIDE, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         drive.getAccelerationConstraint(MAX_ACCEL_OVERRIDE)
                 )
@@ -289,7 +289,7 @@ public class AutoPowerPlayWithFiveConesAndRotatorArm extends LinearOpMode {
                 )
                 .build();
         Trajectory backLittleTowardsFifthPole = drive.trajectoryBuilder(forwardTowardsXConeStackFifthPole.end())
-                .lineToLinearHeading(new Pose2d(-58*teamColor, yValueForChannel ,newAngleToUse)
+                .lineToLinearHeading(new Pose2d(-56*teamColor, yValueForChannel ,newAngleToUse)
                         ,drive.getVelocityConstraint(MAX_VEL_OVERRIDE, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         drive.getAccelerationConstraint(MAX_ACCEL_OVERRIDE)
                 )

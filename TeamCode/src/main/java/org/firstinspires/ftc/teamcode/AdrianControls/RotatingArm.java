@@ -29,10 +29,14 @@ public class RotatingArm {
     public RotatorArmStates RotatorArmMode;
     public static final double bottomTickValue = 1555;
     public static final double nintyDegreeTickDisplacementRight = 376;
-    public static final double  nintyDegreeTickDisplacementLeft = 375; //370.53;
+    public static final double  nintyDegreeTickDisplacementLeft = 375; // 375;
+    public static final double fortyFiveDegreeTickDisplacementRight = 227;
+    public static final double  fortyFiveDegreeTickDisplacementLeft = 226; //
     public static final double
             ROTATOR_LEFT = MathUtilities.map(bottomTickValue-nintyDegreeTickDisplacementLeft, inputMin, inputMax, outputMin,outputMax),
             ROTATOR_RIGHT = MathUtilities.map(bottomTickValue+nintyDegreeTickDisplacementRight, inputMin, inputMax, outputMin,outputMax),
+            ROTATOR_LEFT_45 = MathUtilities.map(bottomTickValue-fortyFiveDegreeTickDisplacementLeft, inputMin, inputMax, outputMin,outputMax),
+            ROTATOR_RIGHT_45 = MathUtilities.map(bottomTickValue+fortyFiveDegreeTickDisplacementRight, inputMin, inputMax, outputMin,outputMax),
             ROTATOR_BOTTOM= MathUtilities.map(bottomTickValue, inputMin, inputMax, outputMin,outputMax),
             ROTATOR_TOP = MathUtilities.map(2482, inputMin, inputMax, outputMin,outputMax);
 

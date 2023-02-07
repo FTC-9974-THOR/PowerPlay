@@ -14,7 +14,7 @@ public class Claw {
             CLAW_CLOSED = MathUtilities.map(1465, 500, 2500, 0,1),
     //Claw 1 Positions
     CLAW_OPEN_1 = MathUtilities.map(1600, 500, 2500, 0,1),
-    CLAW_CLOSED_1 = MathUtilities.map(1970, 500, 2500, 0,1),
+    CLAW_CLOSED_1 = MathUtilities.map(1920, 500, 2500, 0,1), //1970 orig 17th of Jan
     //Claw 2 Positions
     CLAW_OPEN_2 = MathUtilities.map(1500, 500, 2500, 0,1),
     CLAW_CLOSED_2 = MathUtilities.map(1865, 500, 2500, 0,1);

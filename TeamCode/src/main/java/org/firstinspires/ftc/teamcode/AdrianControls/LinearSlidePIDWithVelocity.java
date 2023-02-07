@@ -53,12 +53,16 @@ public class LinearSlidePIDWithVelocity {
     private static final double lowPoleHeightTeleop = 0.326;
     private static final double middlePoleHeightTeleop = 0.551;
     private static final double highPoleHeightTeleop = 0.745;
-    private static final double level5ConeStackHeight = 0.120;
-    private static final double level4ConeStackHeight = 0.093;
-    private static final double level3ConeStackHeight = 0.063;
-    private static final double level2ConeStackHeight = 0.033;
+    private static final double level5ConeStackHeight = 0.119; //0.120
+    private static final double level4ConeStackHeight = 0.091; //0.092
+    private static final double level3ConeStackHeight = 0.062; // 0.063
+    private static final double level2ConeStackHeight = 0.025; //0.028
     private static final double aboveTheCameraHeight = 0.1;
     private static final double levelToRaiseTheConeFromStack = 0.24; // 0.25 was orig.
+    private static final double middlePoleHeightForTurretAutonomous = 0.308;// 0.42 for 45 deg rotator arm; //0.36 for 90 deg rotator arm
+    public double subtractionForLowerCalcualtedHeightForTurretAutonomous = 0.15; //0.2, 0.15
+    public boolean isTurretUsed = false;
+
     //endregion
     public static class MotorConstants {
         public double kV, kB, kStatic;
@@ -86,6 +90,25 @@ public class LinearSlidePIDWithVelocity {
                 (x,dx) -> LIFT_MASS * 9.8066  * (diameterOfSpool/2)
 
         );
+
+        Lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        Lift.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        Lift.setDirection(DcMotorEx.Direction.REVERSE);
+        regulator = new VoltageRegulator(hardwareMap);
+        profile = new MotionProfile(Collections.singletonList(new MotionSegment(new MotionState(0,0),0)));
+        profileTimer = new ElapsedTime();
+    }
+    public LinearSlidePIDWithVelocity(HardwareMap hardwareMap, boolean isTurretUsed) {
+        this.isTurretUsed = isTurretUsed;
+        Realizer.realize(this, hardwareMap);
+        controller = new PIDFController(new PIDCoefficients(10.0, 0, 0),//1.0,0.0,0.08
+                MOTOR_CONSTANTS.kB / (diameterOfSpool/2),
+                (MOTOR_ANGULAR_MOMENT_OF_INERTIA + LIFT_MASS*Math.pow((diameterOfSpool/2),2)) / (diameterOfSpool/2),
+                MOTOR_CONSTANTS.kStatic,
+                (x,dx) -> LIFT_MASS * 9.8066  * (diameterOfSpool/2)
+
+        );
+
         Lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         Lift.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         Lift.setDirection(DcMotorEx.Direction.REVERSE);
@@ -137,7 +160,18 @@ public class LinearSlidePIDWithVelocity {
     }
     public void moveToMiddlePole()
     {
-        this.moveTo(middlePoleHeight);
+        if(isTurretUsed)
+        {
+            this.moveTo(middlePoleHeightForTurretAutonomous);
+
+        }
+        else {
+            this.moveTo(middlePoleHeight);
+        }
+    }
+    public void moveToMiddlePoleForFirstPole()
+    {
+            this.moveTo(middlePoleHeight);
     }
     public void moveToHighPole()
     {

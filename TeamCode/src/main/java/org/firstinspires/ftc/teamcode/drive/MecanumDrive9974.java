@@ -135,8 +135,8 @@ public class MecanumDrive9974 extends MecanumDrive {
         frontEncoderMotor = hardwareMap.get(DcMotorEx.class, "frontEncoder");
         leftEncoderMotor = hardwareMap.get(DcMotorEx.class, "leftEncoder");
         rightEncoderMotor = hardwareMap.get(DcMotorEx.class, "rightEncoder");
-        rightLaser = hardwareMap.get(Rev2mDistanceSensor.class,"rightLaser");
-        leftLaser = hardwareMap.get(Rev2mDistanceSensor.class,"leftLaser");
+//        rightLaser = hardwareMap.get(Rev2mDistanceSensor.class,"rightLaser");
+  //      leftLaser = hardwareMap.get(Rev2mDistanceSensor.class,"leftLaser");
 
 
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);

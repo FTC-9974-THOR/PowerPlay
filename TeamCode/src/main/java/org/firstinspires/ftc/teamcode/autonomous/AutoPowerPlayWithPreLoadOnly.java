@@ -195,7 +195,7 @@ public class AutoPowerPlayWithPreLoadOnly extends LinearOpMode {
         if (isStopRequested()) return;
         claw.CloseClaw();
         sleep(500);
-        linearSlide.moveToLowPole();
+        linearSlide.moveToLowPoleTeleop();
         currentState = State.raiseTheLinearSlide;
 
 

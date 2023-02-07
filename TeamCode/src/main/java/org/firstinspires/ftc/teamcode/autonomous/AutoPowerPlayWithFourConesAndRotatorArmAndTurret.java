@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.autonomous;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -17,7 +16,7 @@ import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.teamcode.AdrianControls.Claw;
 import org.firstinspires.ftc.teamcode.AdrianControls.LinearSlidePIDWithVelocity;
 import org.firstinspires.ftc.teamcode.AdrianControls.RotatingArm;
-import org.firstinspires.ftc.teamcode.AdrianControls.TurretWithPid;
+import org.firstinspires.ftc.teamcode.AdrianControls.Turret;
 import org.firstinspires.ftc.teamcode.AdrianControls.VuforiaStuff2023;
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.MecanumDrive9974;
@@ -46,7 +45,7 @@ import java.util.concurrent.TimeUnit;
 @Config
 @Autonomous(group = "advanced")
 @Disabled
-public class AutoPowerPlayWithFourConesAndRotatorArm extends LinearOpMode {
+public class AutoPowerPlayWithFourConesAndRotatorArmAndTurret extends LinearOpMode {
 
     // This enum defines our "state"
     // This is essentially just defines the possible steps our program will take
@@ -59,6 +58,7 @@ public class AutoPowerPlayWithFourConesAndRotatorArm extends LinearOpMode {
         forwardOverShootForSignal,
         forwardTowardsYConeStack,
         forwardTowardsXConeStack,
+        bringDownTheSlideToCorrectLevelAndCloseClaw,
         pickupSecondCone,
         backLittleTowardsSecondPole,
         backTowardsSecondPole,
@@ -84,21 +84,21 @@ public class AutoPowerPlayWithFourConesAndRotatorArm extends LinearOpMode {
     private TFObjectDetector tfod;
 
     public static  double yValueForChannel = 0.0;
-    public static  double yValueForChannelLeft = -20.3;
+    public static  double yValueForChannelLeft = -20.3; //20.3
     public static  double yValueForChannelRight = -20.3;
     public static  double yValueForChannelHighPole = 0.0;
     public static  double yValueForChannelHighPoleLeft = -21.5;
     public static  double yValueForChannelHighPoleRight = -20;
     public static  double yValueForChannelForConeDropOff = 0.0;
-    public static  double yValueForChannelForConeDropOffLeft = -21;
+    public static  double yValueForChannelForConeDropOffLeft = -20.5; //22
     public static  double yValueForChannelForConeDropOffRight = -20.5;
     public static  double xValueForwardTowardsXConeStack = 0.0;
-    public static  double xValueForwardTowardsXConeStackLeftClaw1 = -59.0;
+    public static  double xValueForwardTowardsXConeStackLeftClaw1 = -58.1; //Reduced, orig is -59
     public static  double xValueForwardTowardsXConeStackRightClaw1 = -60.75;
     public static  double xValueForwardTowardsXConeStackLeftClaw2 = -59.5;
     public static  double xValueForwardTowardsXConeStackRightClaw2 = -59.7;
     public static  double xValueForChannel = 0.0;
-    public static  double xValueForChannelLeft = -14.0;
+    public static  double xValueForChannelLeft = -36.0; //38
     public static  double xValueForChannelRight = -15.0;
 
 
@@ -114,9 +114,9 @@ public class AutoPowerPlayWithFourConesAndRotatorArm extends LinearOpMode {
 
 
 
-    public static double MAX_VEL_OVERRIDE = DriveConstants.MAX_VEL*0.70; //0.7
-    public static  double MAX_ACCEL_OVERRIDE = DriveConstants.MAX_ACCEL*0.70; //0.7
-    public AutoPowerPlayWithFourConesAndRotatorArm(int TeamColor, boolean SlideToSide) {
+    public static double MAX_VEL_OVERRIDE = DriveConstants.MAX_VEL*0.8; //0.7
+    public static  double MAX_ACCEL_OVERRIDE = DriveConstants.MAX_ACCEL*0.8; //0.7
+    public AutoPowerPlayWithFourConesAndRotatorArmAndTurret(int TeamColor, boolean SlideToSide) {
         super();
         teamColor = TeamColor;
         slideToSide = SlideToSide;
@@ -132,9 +132,9 @@ public class AutoPowerPlayWithFourConesAndRotatorArm extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         // Initialize our lift
         Lift lift = new Lift(hardwareMap);
-        LinearSlidePIDWithVelocity linearSlide = new LinearSlidePIDWithVelocity(hardwareMap);
+        LinearSlidePIDWithVelocity linearSlide = new LinearSlidePIDWithVelocity(hardwareMap, true);
         Claw claw = new Claw(hardwareMap, linearSlide);
-        //TurretWithPid turret = new TurretWithPid(hardwareMap);
+        Turret turret = new Turret(hardwareMap);
         RotatingArm rotatingArm = new RotatingArm(hardwareMap, linearSlide);
 
         // Initialize MecanumDrive9974
@@ -339,11 +339,12 @@ public class AutoPowerPlayWithFourConesAndRotatorArm extends LinearOpMode {
         //drive.SlideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         VuforiaStuff2023.sleeveSignal pos = null;
         claw.CloseClaw();
-        //turret.turretGoHome();
-        //turret.update();
+        turret.turretGoHomeWithVoltage();
+        turret.update();
 
         waitForStart();
         //drive.ArmLifter(0,4);
+
         posData = vuforiaStuff.vuforiascan(true, true,false,teamColor);
         double distanceToDropOffSkystone = 0;
         double distanceBackToCenterLine = 0;
@@ -379,7 +380,6 @@ public class AutoPowerPlayWithFourConesAndRotatorArm extends LinearOpMode {
         //sleep(300); //OG is 300
         //linearSlide.moveToLowPole();
         linearSlide.moveToMiddlePole();
-
         if(teamColor <0) {
             rotatingArm.setRotatorArmPositionRaw(rotatingArm.ROTATOR_LEFT);
         }
@@ -400,16 +400,18 @@ public class AutoPowerPlayWithFourConesAndRotatorArm extends LinearOpMode {
         //  pos = VuforiaStuff2023.sleeveSignal.ONEDOT;
 
         ElapsedTime timer = new ElapsedTime();
-        double timeToWaitBeforeBringingRotatingArmDownInMilliSeconds = 500;
+        double timeToWaitBeforeBringingRotatingArmDownInMilliSeconds = 600; //500
         double timeToWaitBeforeBringingRotatingArmDownInMilliSecondsForShortDistance = 200;
         double timeToWaitBeforeBringingRotatingArmDownInMilliSecondsForLongDistance = 400;
-        double timeToWaitBeforeBringingRotatingArmDownBetweenCycles = 565;
+        double timeToWaitBeforeBringingRotatingArmDownBetweenCycles = 150; // 565
+        double timeToWaitBeforeBringingSlideDownToRightLevel = 210; // 565
+
         double timeToWaitBeforeBringingRotatingArmDownBetweenCyclesForEnd = 525;
         double timeToWaitBeforeBringingRotatingArmUpAfterPickup = 350;
-
+        double timeToCloseClawForPickup = 200;
 
         while (opModeIsActive() && !isStopRequested()) {
-
+            turret.update();
             // Our state machine logic
             // You can have multiple switch statements running together for multiple state machines
             // in parallel. This is the basic idea for subsystems and commands.
@@ -423,7 +425,7 @@ public class AutoPowerPlayWithFourConesAndRotatorArm extends LinearOpMode {
                     break;
 //region States For Auto
                 case raiseTheLinearSlide:
-                    if(!linearSlide.isBusy() && !rotatingArm.isBusy())
+                    if(!linearSlide.isBusy() && !rotatingArm.isBusy() && !turret.isBusy())
                     {
                         drive.followTrajectoryAsync(initialForwardTowardsFirstPole);
                         currentState = State.initalForwardTowardsFirstPole;
@@ -451,7 +453,7 @@ public class AutoPowerPlayWithFourConesAndRotatorArm extends LinearOpMode {
                     {
                         claw.clawMode = Claw.statesWithinClaw.linearSlideDown;
                     }
-                    claw.OpenClawWithLinearSlide(linearSlide.subtractionForLowerCalcualtedHeight);
+                    claw.OpenClawWithLinearSlide(linearSlide.subtractionForLowerCalcualtedHeightForTurretAutonomous);
                     if(claw.clawMode == Claw.statesWithinClaw.clawOpenDone) {
                         //sleep(300);
                         currentState = State.forwardOverShootForSignal;
@@ -489,56 +491,89 @@ public class AutoPowerPlayWithFourConesAndRotatorArm extends LinearOpMode {
                         currentState = State.forwardTowardsXConeStack;
                         drive.turn(Math.toRadians(90*teamColor));
                         drive.followTrajectoryAsync(forwardTowardsXConeStack);
+                        turret.turretGoHomeWithVoltage();
+                        turret.update();
                     }
                     break;
                 case forwardTowardsXConeStack:
                     switch(counterForAutoCycle) {
                         case 1:
-                            if (!drive.isBusy()) {
+                            if (!drive.isBusy() && !turret.isBusy()) {
                                 currentState = State.pickupSecondCone;
                                 claw.CloseClaw();
-                                sleep(300);
+                                sleep((long) timeToCloseClawForPickup);
                                 linearSlide.moveToLevelToRaiseTheConeFromStack();
 
                             }
                              break;
 
                         case 2:
-                            if(!drive.isBusy() && !rotatingArm.isBusy() && !linearSlide.isBusy())
+                            if(!drive.isBusy() && !rotatingArm.isBusy() && !linearSlide.isBusy() && !turret.isBusy())
                             {
-                                currentState = State.pickupSecondCone;
-                                claw.CloseClaw();
-                                sleep(300);
-                                linearSlide.moveToLevelToRaiseTheConeFromStack();
+                                currentState = State.bringDownTheSlideToCorrectLevelAndCloseClaw; // pickupSecondCone
+
+                               // currentState = State.pickupSecondCone; // pickupSecondCone
+                                linearSlide.moveToLevel4ConeStack();
+
                             }
                             else
                             {
                                 if(timer.time(TimeUnit.MILLISECONDS) > timeToWaitBeforeBringingRotatingArmDownBetweenCycles)
                                 {
                                     rotatingArm.setRotatorArmPositionRaw(RotatingArm.ROTATOR_BOTTOM);
-                                    linearSlide.moveToLevel4ConeStack();
+
+                                    linearSlide.moveToLevelToRaiseTheConeFromStack(); // move to level4 cone stack.
                                 }
+
                             }
                             break;
                         case 3:
                             if(!drive.isBusy() && !rotatingArm.isBusy() && !linearSlide.isBusy())
                             {
-                                currentState = State.pickupSecondCone;
-                                claw.CloseClaw();
-                                sleep(300);
-                                linearSlide.moveToLevelToRaiseTheConeFromStack();
+                                currentState = State.bringDownTheSlideToCorrectLevelAndCloseClaw; //pickupSecondCone
+                                linearSlide.moveToLevel3ConeStack();
                             }
                             else
                             {
                                 if(timer.time(TimeUnit.MILLISECONDS) > timeToWaitBeforeBringingRotatingArmDownBetweenCycles)
                                 {
                                     rotatingArm.setRotatorArmPositionRaw(RotatingArm.ROTATOR_BOTTOM);
-                                    linearSlide.moveToLevel3ConeStack();
+                                    linearSlide.moveToLevelToRaiseTheConeFromStack();
                                 }
                             }
                             break;
                     }
                     break;
+                case bringDownTheSlideToCorrectLevelAndCloseClaw:
+                    switch(counterForAutoCycle) {
+                        case 1:
+                            if (!drive.isBusy() && !turret.isBusy()) {
+                                currentState = State.pickupSecondCone;
+                            }
+                            break;
+
+                        case 2:
+                            if(!linearSlide.isBusy())
+                            {
+                                currentState = State.pickupSecondCone; // pickupSecondCone
+
+                                // currentState = State.pickupSecondCone; // pickupSecondCone
+                                claw.CloseClaw();
+                                sleep((long) timeToCloseClawForPickup);
+                                linearSlide.moveToLevelToRaiseTheConeFromStack();
+
+                            }
+                            break;
+                        case 3:
+                            if(!drive.isBusy() && !rotatingArm.isBusy() && !linearSlide.isBusy())
+                            {
+                                currentState = State.pickupSecondCone; //pickupSecondCone
+                                claw.CloseClaw();
+                                sleep((long) timeToCloseClawForPickup);
+                                linearSlide.moveToLevelToRaiseTheConeFromStack();
+                            }
+                            break;
+                    }
                 case pickupSecondCone:
                     if(!linearSlide.isBusy())
                     {
@@ -559,7 +594,7 @@ public class AutoPowerPlayWithFourConesAndRotatorArm extends LinearOpMode {
                     }
                     break;
                 case backLittleTowardsSecondPole:
-                    if(!drive.isBusy()&&!linearSlide.isBusy()&&!rotatingArm.isBusy())
+                    if(!drive.isBusy()&&!linearSlide.isBusy()&&!rotatingArm.isBusy()&&!turret.isBusy())
                     {
                         currentState = State.backTowardsSecondPole;
                     }
@@ -573,8 +608,12 @@ public class AutoPowerPlayWithFourConesAndRotatorArm extends LinearOpMode {
                                     //drive.followTrajectoryAsync(backTowardsSecondPole);
                                     linearSlide.moveToMiddlePole();
                                     if (teamColor < 0) {
+                                        turret.turretGoRightWithVoltage();
+                                        turret.update();
                                         rotatingArm.setRotatorArmPositionRaw(rotatingArm.ROTATOR_RIGHT);
                                     } else {
+                                        turret.turretGoLeftWithVoltage();
+                                        turret.update();
                                         rotatingArm.setRotatorArmPositionRaw(rotatingArm.ROTATOR_LEFT);
                                     }
                                     break;
@@ -582,8 +621,12 @@ public class AutoPowerPlayWithFourConesAndRotatorArm extends LinearOpMode {
                                     //drive.followTrajectoryAsync(backTowardsThirdPole);
                                     linearSlide.moveToMiddlePole();
                                     if (teamColor < 0) {
+                                        turret.turretGoRightWithVoltage();
+                                        turret.update();
                                         rotatingArm.setRotatorArmPositionRaw(rotatingArm.ROTATOR_RIGHT);
                                     } else {
+                                        turret.turretGoLeftWithVoltage();
+                                        turret.update();
                                         rotatingArm.setRotatorArmPositionRaw(rotatingArm.ROTATOR_LEFT);
                                     }
                                     break;
@@ -591,8 +634,12 @@ public class AutoPowerPlayWithFourConesAndRotatorArm extends LinearOpMode {
                                     //drive.followTrajectoryAsync(backTowardsFourthPole);
                                     linearSlide.moveToMiddlePole();
                                     if (teamColor < 0) {
+                                        turret.turretGoRightWithVoltage();
+                                        turret.update();
                                         rotatingArm.setRotatorArmPositionRaw(rotatingArm.ROTATOR_RIGHT);
                                     } else {
+                                        turret.turretGoLeftWithVoltage();
+                                        turret.update();
                                         rotatingArm.setRotatorArmPositionRaw(rotatingArm.ROTATOR_LEFT);
                                     }
                                     break;
@@ -614,7 +661,7 @@ public class AutoPowerPlayWithFourConesAndRotatorArm extends LinearOpMode {
                     {
                         claw.clawMode = Claw.statesWithinClaw.linearSlideDown;
                     }
-                    claw.OpenClawWithLinearSlide(linearSlide.subtractionForLowerCalcualtedHeight);
+                    claw.OpenClawWithLinearSlide(linearSlide.subtractionForLowerCalcualtedHeightForTurretAutonomous);
                     if(claw.clawMode == Claw.statesWithinClaw.clawOpenDone) {
 
                         //sleep(300);
@@ -623,16 +670,23 @@ public class AutoPowerPlayWithFourConesAndRotatorArm extends LinearOpMode {
                             case 1:
                                 counterForAutoCycle += 1;
                                 drive.followTrajectoryAsync(forwardTowardsXConeStackThirdPole);
+                                turret.turretGoHomeWithVoltage();
+                                turret.update();
                                 currentState = State.forwardTowardsXConeStack;
                                 timer.reset();
+                                //sleep here to let turret start before arm and lift move.
                                 break;
                             case 2:
                                 counterForAutoCycle += 1;
                                 drive.followTrajectoryAsync(forwardTowardsXConeStackFourthPole);
+                                turret.turretGoHomeWithVoltage();
+                                turret.update();
                                 currentState = State.forwardTowardsXConeStack;
                                 timer.reset();
                                 break;
                             case 3:
+                                turret.turretGoHomeWithVoltage();
+                                turret.update();
                                 currentState = State.goToTheParkingPosition;
                                 break;
 
@@ -725,7 +779,6 @@ public class AutoPowerPlayWithFourConesAndRotatorArm extends LinearOpMode {
             lift.update();
             linearSlide.update();
             rotatingArm.update();
-            //turret.update();
             //drive.ArmLifterAsyncUpdate(levelArmShouldGoTo);
 
             // Read pose
@@ -742,6 +795,9 @@ public class AutoPowerPlayWithFourConesAndRotatorArm extends LinearOpMode {
             telemetry.addData("x", poseEstimate.getX());
             telemetry.addData("y", poseEstimate.getY());
             telemetry.addData("heading", poseEstimate.getHeading());
+            telemetry.addData("MagSwitchStateForTurret", turret.magneticLimitSwitch.getState());
+            telemetry.addData("TurretPOT", turret.getTurretPotentiometerVoltage());
+
             //telemetry.addData("ArmPosition",drive.SlideMotor.getCurrentPosition());
             telemetry.update();
         }
