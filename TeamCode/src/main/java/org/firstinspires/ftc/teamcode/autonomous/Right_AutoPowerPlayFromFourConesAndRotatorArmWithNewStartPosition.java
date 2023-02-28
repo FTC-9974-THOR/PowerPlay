@@ -31,7 +31,6 @@ package org.firstinspires.ftc.teamcode.autonomous;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 /**
  * This 2020-2021 OpMode illustrates the basics of using the TensorFlow Object Detection API to
@@ -44,12 +43,12 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
  * is explained below.
  */
 @Config
-@Autonomous(name = "Right_Auto_5_Cone", group = "Autonomous")
-@Disabled
+@Autonomous(name = "Right_Auto_4_Cone_NewStart", group = "Autonomous")
+//@Disabled
 
-public class Right_AutoPowerPlayFromFiveConesAndRotatorArm extends AutoPowerPlayWithFiveConesAndRotatorArm {
+public class Right_AutoPowerPlayFromFourConesAndRotatorArmWithNewStartPosition extends AutoPowerPlayWithFourConesAndRotatorArmWithNewStartPosition {
 
-    public Right_AutoPowerPlayFromFiveConesAndRotatorArm()
+    public Right_AutoPowerPlayFromFourConesAndRotatorArmWithNewStartPosition()
     {
         super(-1, false);
     }

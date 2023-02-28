@@ -41,7 +41,9 @@ public class TurretWithPid {
     public static double kP=4.5; // 4.5 OG
     public static double kI =0;
     public static double kD =0;
-    public static double maxPowerToApply = 0.6;
+    public static double maxPowerToApply = 0.9; //0.6
+    public static double maxPowerToApplyWhenCloseToFinalPosition = 0.3;
+    public static double voltageValueDiffWhereMaxPowerIsReducedBeforeFinalPosition = 0.150;
 
 
     /*
@@ -76,8 +78,16 @@ Center/Home = 0.999 V
     public double getPosition(){return  turretPotentiometer.getVoltage();}
     public void setTargetPosition(double position){controller.setTargetPosition(position);}
     public double getVelocity(){return turretMotor.getVelocity();}
-
-
+    public boolean isItInRangeToBringLiftDownDuringTurretAuto(){
+        if(Math.abs(getPosition()-controller.getTargetPosition()) <= voltageValueDiffWhereMaxPowerIsReducedBeforeFinalPosition)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
 
     public double getTurretPotentiometerVoltage()
     {
@@ -161,16 +171,25 @@ Center/Home = 0.999 V
         double currentPosition = getPosition();
         double currentVelocity = getVelocity();
         powerToApply = controller.update(currentPosition,currentVelocity);
-        if(Math.abs(powerToApply) >= maxPowerToApply)
+        if(Math.abs(currentPosition-controller.getTargetPosition()) > voltageValueDiffWhereMaxPowerIsReducedBeforeFinalPosition) {
+            if (Math.abs(powerToApply) >= maxPowerToApply) {
+                if (powerToApply < 0) {
+                    powerToApply = -1 * maxPowerToApply;
+                } else {
+                    powerToApply = maxPowerToApply;
+                }
+            }
+        }
+        else
         {
-            if(powerToApply<0)
-            {
-                powerToApply = -1*maxPowerToApply;
+            if (Math.abs(powerToApply) >= maxPowerToApplyWhenCloseToFinalPosition) {
+                if (powerToApply < 0) {
+                    powerToApply = -1 * maxPowerToApplyWhenCloseToFinalPosition;
+                } else {
+                    powerToApply = maxPowerToApplyWhenCloseToFinalPosition;
+                }
             }
-            else
-            {
-                powerToApply = maxPowerToApply;
-            }
+
         }
         if(currentPosition > maxPotentiometerValue){
             powerToApply = Math.min(powerToApply, 0);

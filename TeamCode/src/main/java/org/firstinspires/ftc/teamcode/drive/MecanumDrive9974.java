@@ -24,6 +24,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
@@ -77,6 +78,7 @@ public class MecanumDrive9974 extends MecanumDrive {
     public DcMotorEx frontEncoderMotor;
     public DcMotorEx leftEncoderMotor;
     public DcMotorEx rightEncoderMotor;
+   // public Servo sweeper;
     public Rev2mDistanceSensor leftLaser;
     public Rev2mDistanceSensor rightLaser;
 
@@ -135,6 +137,8 @@ public class MecanumDrive9974 extends MecanumDrive {
         frontEncoderMotor = hardwareMap.get(DcMotorEx.class, "frontEncoder");
         leftEncoderMotor = hardwareMap.get(DcMotorEx.class, "leftEncoder");
         rightEncoderMotor = hardwareMap.get(DcMotorEx.class, "rightEncoder");
+//        sweeper = hardwareMap.get(Servo.class, "sweeper");
+
 //        rightLaser = hardwareMap.get(Rev2mDistanceSensor.class,"rightLaser");
   //      leftLaser = hardwareMap.get(Rev2mDistanceSensor.class,"leftLaser");
 

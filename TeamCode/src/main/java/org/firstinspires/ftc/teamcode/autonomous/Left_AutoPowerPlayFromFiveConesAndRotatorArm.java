@@ -45,7 +45,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
  */
 @Config
 @Autonomous(name = "Left_Auto_5_Cone", group = "Autonomous")
-//@Disabled
+@Disabled
 
 public class Left_AutoPowerPlayFromFiveConesAndRotatorArm extends AutoPowerPlayWithFiveConesAndRotatorArm {
 

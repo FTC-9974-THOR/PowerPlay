@@ -89,6 +89,7 @@ public class VuforiaStuff2023 {
 
         //region start Crop Variable With Rotating Arm Design with Robot starting in the Middle
         //Crop Variables Start
+        /*
         double cropStartXLeft = 126.0;
         double cropStartYLeft = 45.0;
         double cropWidthLeft = 60.0;
@@ -97,6 +98,21 @@ public class VuforiaStuff2023 {
         double cropStartYRight = 45.0;
         double cropWidthRight = 60.0;
         double cropHeightRight = 93.0;
+        */
+        //region start Crop Variable With Turrent Design with Robot starting in One Corner
+        //Crop Variables Start
+
+        double cropStartXLeft = 0.0;
+        double cropStartYLeft = 5.0;
+        double cropWidthLeft = 60.0;
+        double cropHeightLeft = 93.0;
+        double cropStartXRight = 268.0;
+        double cropStartYRight = 45.0;
+        double cropWidthRight = 60.0;
+        double cropHeightRight= 93.0;
+
+
+        //Crop Variables End
         double MaxWidth=640.0;
         double MaxHeight=480.0;
         

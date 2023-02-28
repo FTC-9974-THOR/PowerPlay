@@ -29,7 +29,7 @@ public class TeleOpPowerPlay9974 extends LinearOpMode {
         LinearSlidePIDWithVelocity linearslide;
         Claw claw;
         Turret turret;
-        //TurretWithPid turretWithPID = new TurretWithPid(hardwareMap);
+        TurretWithPid turretWithPID = new TurretWithPid(hardwareMap);
         RotatingArm rotatorArm;
         waitForStart();
         linearslide = new LinearSlidePIDWithVelocity(hardwareMap);
@@ -56,7 +56,7 @@ public class TeleOpPowerPlay9974 extends LinearOpMode {
         boolean gamepad2_X_WasPressed = false;
 
         rotatorArm.rotatingArmServo.setPosition(rotatorArm.ROTATOR_BOTTOM);
-        //turretWithPID.turretGoHome();
+        turretWithPID.turretGoHome();
         while (opModeIsActive()) {
             if(gamepad2.right_stick_y!=0)
             {
@@ -293,7 +293,7 @@ public class TeleOpPowerPlay9974 extends LinearOpMode {
 
             double powerToApply = 0.0;
             //turret.update();
-            //turretWithPID.update();
+            turretWithPID.update();
             if(Math.abs(gamepad2.right_stick_y) > 0.00){
                 gamepad2_Y_WasPressed = false;
                 gamepad2_A_WasPressed = false;

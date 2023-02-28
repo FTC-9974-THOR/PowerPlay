@@ -43,7 +43,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
  * is explained below.
  */
 @Autonomous(name = "Left_AutoPowerPlayWithPreLoadOnly", group = "Autonomous")
-//@Disabled
+@Disabled
 
 public class Left_AutoPowerPlayWithPreLoadOnly extends AutoPowerPlayWithPreLoadOnly {
 

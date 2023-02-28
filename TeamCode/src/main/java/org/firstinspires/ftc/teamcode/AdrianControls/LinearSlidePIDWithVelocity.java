@@ -53,14 +53,14 @@ public class LinearSlidePIDWithVelocity {
     private static final double lowPoleHeightTeleop = 0.326;
     private static final double middlePoleHeightTeleop = 0.551;
     private static final double highPoleHeightTeleop = 0.745;
-    private static final double level5ConeStackHeight = 0.119; //0.120
-    private static final double level4ConeStackHeight = 0.091; //0.092
-    private static final double level3ConeStackHeight = 0.062; // 0.063
-    private static final double level2ConeStackHeight = 0.025; //0.028
+    private static final double level5ConeStackHeight = 0.124;//0.119 //0.120
+    private static final double level4ConeStackHeight = 0.096; //0.091//0.092
+    private static final double level3ConeStackHeight = 0.067; //0.062// 0.063
+    private static final double level2ConeStackHeight = 0.030; //0.025 //0.028
     private static final double aboveTheCameraHeight = 0.1;
     private static final double levelToRaiseTheConeFromStack = 0.24; // 0.25 was orig.
-    private static final double middlePoleHeightForTurretAutonomous = 0.308;// 0.42 for 45 deg rotator arm; //0.36 for 90 deg rotator arm
-    public double subtractionForLowerCalcualtedHeightForTurretAutonomous = 0.15; //0.2, 0.15
+    private static final double middlePoleHeightForTurretAutonomous = 0.39; //0.35 // 0.308// 0.42 for 45 deg rotator arm; //0.36 for 90 deg rotator arm
+    public double subtractionForLowerCalcualtedHeightForTurretAutonomous = 0.12; //0.2, 0.15
     public boolean isTurretUsed = false;
 
     //endregion

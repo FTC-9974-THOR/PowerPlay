@@ -31,6 +31,7 @@ package org.firstinspires.ftc.teamcode.autonomous;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 /**
  * This 2020-2021 OpMode illustrates the basics of using the TensorFlow Object Detection API to
@@ -44,7 +45,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
  */
 @Config
 @Autonomous(name = "Left_Auto_4_Cone_Turret", group = "Autonomous")
-//@Disabled
+@Disabled
 
 public class Left_AutoPowerPlayFromFourConesAndRotatorArmAndTurret extends AutoPowerPlayWithFourConesAndRotatorArmAndTurret {
 

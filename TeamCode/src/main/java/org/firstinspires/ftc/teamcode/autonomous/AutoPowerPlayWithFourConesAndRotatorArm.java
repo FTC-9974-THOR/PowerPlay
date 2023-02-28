@@ -134,7 +134,7 @@ public class AutoPowerPlayWithFourConesAndRotatorArm extends LinearOpMode {
         Lift lift = new Lift(hardwareMap);
         LinearSlidePIDWithVelocity linearSlide = new LinearSlidePIDWithVelocity(hardwareMap);
         Claw claw = new Claw(hardwareMap, linearSlide);
-        //TurretWithPid turret = new TurretWithPid(hardwareMap);
+        TurretWithPid turret = new TurretWithPid(hardwareMap);
         RotatingArm rotatingArm = new RotatingArm(hardwareMap, linearSlide);
 
         // Initialize MecanumDrive9974
@@ -339,8 +339,8 @@ public class AutoPowerPlayWithFourConesAndRotatorArm extends LinearOpMode {
         //drive.SlideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         VuforiaStuff2023.sleeveSignal pos = null;
         claw.CloseClaw();
-        //turret.turretGoHome();
-        //turret.update();
+        turret.turretGoHome();
+        turret.update();
 
         waitForStart();
         //drive.ArmLifter(0,4);
@@ -409,7 +409,7 @@ public class AutoPowerPlayWithFourConesAndRotatorArm extends LinearOpMode {
 
 
         while (opModeIsActive() && !isStopRequested()) {
-
+        turret.update();
             // Our state machine logic
             // You can have multiple switch statements running together for multiple state machines
             // in parallel. This is the basic idea for subsystems and commands.

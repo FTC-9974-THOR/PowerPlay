@@ -13,8 +13,8 @@ public class Claw {
     public double CLAW_OPEN = MathUtilities.map(1100, 500, 2500, 0,1),
             CLAW_CLOSED = MathUtilities.map(1465, 500, 2500, 0,1),
     //Claw 1 Positions
-    CLAW_OPEN_1 = MathUtilities.map(1600, 500, 2500, 0,1),
-    CLAW_CLOSED_1 = MathUtilities.map(1920, 500, 2500, 0,1), //1970 orig 17th of Jan
+    CLAW_OPEN_1 = MathUtilities.map(1600, 500, 2500, 0,1), //1600 //1265
+    CLAW_CLOSED_1 = MathUtilities.map(1920, 500, 2500, 0,1), //1920 //1550     //1970 orig 17th of Jan
     //Claw 2 Positions
     CLAW_OPEN_2 = MathUtilities.map(1500, 500, 2500, 0,1),
     CLAW_CLOSED_2 = MathUtilities.map(1865, 500, 2500, 0,1);
@@ -105,7 +105,42 @@ public class Claw {
                 break;
         }
     }
-
+    public void OpenClawWithLinearSlideWithEarlyDrop(double subtractForLower)
+    {
+        if(subtractForLower == linearSlide.subtractionForLowerCalcualtedHeightFast)
+        {
+            OpenClaw();
+            clawMode = statesWithinClaw.clawOpenDone;
+            return;
+        }
+        switch(clawMode)
+        {
+            case IDLE:
+                break;
+            case linearSlideDown:
+                linearSlide.moveToBelowOriginalLevel(subtractForLower);
+                linearSlide.update();
+                clawServo.setPosition(CLAW_OPEN);
+                clawMode = statesWithinClaw.clawOpen;
+                break;
+            case clawOpen:
+                if(!linearSlide.isBusy())
+                {
+                    linearSlide.moveToOriginalLevel();
+                    clawMode = statesWithinClaw.linearSlideReturn;
+                }
+                break;
+            case linearSlideReturn:
+                if(!linearSlide.isBusy())
+                {
+                    clawMode = statesWithinClaw.clawOpenDone;
+                    linearSlide.resetOrignalLevelValues();
+                }
+                break;
+            case clawOpenDone:
+                break;
+        }
+    }
     public void CloseClaw()
     {
         clawServo.setPosition(CLAW_CLOSED);
