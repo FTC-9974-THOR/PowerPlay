@@ -12,10 +12,10 @@ import org.ftc9974.thorcore.util.MathUtilities;
 public class Claw {
     public double CLAW_OPEN = MathUtilities.map(1100, 500, 2500, 0,1),
             CLAW_CLOSED = MathUtilities.map(1465, 500, 2500, 0,1),
-    //Claw 1 Positions
-    CLAW_OPEN_1 = MathUtilities.map(1600, 500, 2500, 0,1), //1600 //1265
-    CLAW_CLOSED_1 = MathUtilities.map(1920, 500, 2500, 0,1), //1920 //1550     //1970 orig 17th of Jan
-    //Claw 2 Positions
+    //Claw 1 Positions                  //1430
+    CLAW_OPEN_1 = MathUtilities.map(1600, 500, 2500, 0,1), //1600- Claw on Robot // //1400, Backup Claw
+                                        //1690
+    CLAW_CLOSED_1 = MathUtilities.map(1920, 500, 2500, 0,1), //1920 - Claw on Robot // // 1710, Backup Claw
     CLAW_OPEN_2 = MathUtilities.map(1500, 500, 2500, 0,1),
     CLAW_CLOSED_2 = MathUtilities.map(1865, 500, 2500, 0,1);
     public enum statesWithinClaw

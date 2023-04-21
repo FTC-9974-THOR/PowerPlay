@@ -91,15 +91,25 @@ public class AutoPowerPlayWithFiveConesAndRotatorArmAndTurretWithPID extends Lin
     public static  double yValueForChannelHighPoleLeft = -21.5;
     public static  double yValueForChannelHighPoleRight = -20;
     public static  double yValueForChannelForConeDropOff = 0.0;
-    public static  double yValueForChannelForConeDropOffLeft = -19;//-18.75//18.25 //19.5//22
-    public static  double yValueForChannelForConeDropOffRight = -18.3;//18.35//18.25
+    public static  double yValueForChannelForConeDropOffLeft = -20.25;
+    //yvalueforchannelforconedropoffLeft
+    // RedLeftOchoa1 - -19.25
+    // Red LeftOchoa2 - 20.25
+
+
+    //-20.25 //-18.75//18.25 //19.5//22
+    public static  double yValueForChannelForConeDropOffRight = -17.8;//18.3 //18.35//18.35//18.25
     public static  double xValueForwardTowardsXConeStack = 0.0;
-    public static  double xValueForwardTowardsXConeStackLeftClaw1 = -58; //57.25//Reduced, orig is -58.1 //-57.9
-    public static  double xValueForwardTowardsXConeStackRightClaw1 = -59.5; //-60.75
+    public static  double xValueForwardTowardsXConeStackLeftClaw1 = -59.1; //-58.0 //-57.75 //57.25//Reduced, orig is -58.1 //-57.9
+    public static  double xValueForwardTowardsXConeStackRightClaw1 = -59.5;  //-60.75
     public static  double xValueForwardTowardsXConeStackLeftClaw2 = -59.5;
     public static  double xValueForwardTowardsXConeStackRightClaw2 = -59.7;
     public static  double xValueForChannel = 0.0;
-    public static  double xValueForChannelLeft = -34; //33.5//35.5 //36.5//-32.25; 45 deg rotator arm//37  90 deg rotator arm
+    public static  double xValueForChannelLeft = -36.75;
+    // -36.5 Left Red Ochoa 1
+    // -36.75 Left Red Ochoca 2
+
+    // -35.5//-34.75//34 //33.5//35.5 //36.5//-32.25; 45 deg rotator arm//37  90 deg rotator arm
     public static  double xValueForChannelRight = -36; //-36.50//34.5//36.5
 
 
@@ -202,8 +212,8 @@ public class AutoPowerPlayWithFiveConesAndRotatorArmAndTurretWithPID extends Lin
         // Let's define our trajectories
         //region TRAJECTORIES
         Trajectory initialForwardTowardsFirstPole = drive.trajectoryBuilder(startPose)
-                //.lineTo(new Vector2d(-36, -64 ))// this is for the low pole.
-                .lineToLinearHeading(new Pose2d(-36*teamColor, -41.65 ,Math.toRadians(90)) //-41.4
+                //.lineTo(new Vector2d(-36, -64 ))// this is for the low pole. //41.65
+                .lineToLinearHeading(new Pose2d(-36*teamColor, -41.9 ,Math.toRadians(90)) //-41.4
                         ,drive.getVelocityConstraint(MAX_VEL_OVERRIDE_FAST, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         drive.getAccelerationConstraint(MAX_ACCEL_OVERRIDE_FAST)
                 ) // this is for the middle pole.
@@ -435,12 +445,12 @@ public class AutoPowerPlayWithFiveConesAndRotatorArmAndTurretWithPID extends Lin
         //  pos = VuforiaStuff2023.sleeveSignal.ONEDOT;
 
         ElapsedTime timer = new ElapsedTime();
-        double timeToWaitBeforeBringingRotatingArmDownInMilliSeconds = 450; //500
+        double timeToWaitBeforeBringingRotatingArmDownInMilliSeconds = 425; //450 //500
         double timeToWaitBeforeBringingRotatingArmDownInMilliSecondsForShortDistance = 200;
         double timeToWaitBeforeBringingRotatingArmDownInMilliSecondsForLongDistance = 400;
         double timeToWaitBeforeBringingRotatingArmDownBetweenCycles = 100; // 150
         double timeToWaitBeforeBringingSlideDownToRightLevel = 210; // 565
-        double timeToWaitBeforeMovingAtStart = 215;//225//215 //50//75
+        double timeToWaitBeforeMovingAtStart = 235; //215 //225//215 //50//75
         double timeToWaitBeforeBringingRotatingArmDownBetweenCyclesForEnd = 300;
         double timeToWaitBeforeBringingRotatingArmUpAfterPickup = 50;//350
         double timeToCloseClawForPickup = 130;//205//225

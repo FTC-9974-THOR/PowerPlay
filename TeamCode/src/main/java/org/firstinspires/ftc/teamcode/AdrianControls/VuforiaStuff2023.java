@@ -103,10 +103,10 @@ public class VuforiaStuff2023 {
         //Crop Variables Start
 
         double cropStartXLeft = 0.0;
-        double cropStartYLeft = 5.0;
-        double cropWidthLeft = 60.0;
+        double cropStartYLeft = 50.0;
+        double cropWidthLeft = 45.0;
         double cropHeightLeft = 93.0;
-        double cropStartXRight = 268.0;
+        double cropStartXRight = 278.0;
         double cropStartYRight = 45.0;
         double cropWidthRight = 60.0;
         double cropHeightRight= 93.0;

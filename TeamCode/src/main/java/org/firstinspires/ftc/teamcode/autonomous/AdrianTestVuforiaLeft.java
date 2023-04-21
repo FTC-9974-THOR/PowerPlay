@@ -30,16 +30,15 @@
 package org.firstinspires.ftc.teamcode.autonomous;
 
 //import com.arcrobotics.ftclib.controller.wpilibcontroller.ArmFeedforward;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
-import org.firstinspires.ftc.teamcode.AdrianControls.VuforiaStuff2023;
 import org.firstinspires.ftc.teamcode.AdrianControls.AdrianMecanumControls;
+import org.firstinspires.ftc.teamcode.AdrianControls.VuforiaStuff2023;
 import org.firstinspires.ftc.teamcode.drive.MecanumDrive9974;
 //import com.arcrobotics.ftclib.controller;
 //import com.acrobotics.
@@ -57,9 +56,9 @@ import org.firstinspires.ftc.teamcode.drive.MecanumDrive9974;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="AdrianTestVuforia", group="Linear Opmode")
-@Disabled
-public class AdrianTestVuforia extends AdrianMecanumControls {
+@Autonomous(name="AdrianTestVuforiaLeft", group="Linear Opmode")
+//@Disabled
+public class AdrianTestVuforiaLeft extends AdrianMecanumControls {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -122,7 +121,7 @@ public class AdrianTestVuforia extends AdrianMecanumControls {
 
 
         VuforiaStuff2023.sleeveSignalDetectedData posData = null;
-        posData = vuforiaStuff.vuforiascan(true, true, false,-1);
+        posData = vuforiaStuff.vuforiascan(true, true, false,1);
         double distanceToDropOffSkystone = 0;
         double distanceBackToCenterLine = 0;
         double distanceBackToSecondStone = 0;

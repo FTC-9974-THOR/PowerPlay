@@ -121,7 +121,7 @@ public class AdrianTestVuforiaRight extends AdrianMecanumControls {
 
 
         VuforiaStuff2023.sleeveSignalDetectedData posData = null;
-        posData = vuforiaStuff.vuforiascan(true, true, false,1);
+        posData = vuforiaStuff.vuforiascan(true, true, false,-1);
         double distanceToDropOffSkystone = 0;
         double distanceBackToCenterLine = 0;
         double distanceBackToSecondStone = 0;
